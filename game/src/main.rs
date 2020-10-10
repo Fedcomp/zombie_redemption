@@ -6,8 +6,8 @@ fn main() {
     App::build()
         .add_resource(WindowDescriptor {
             title: GAME_NAME.into(),
-            width: 800,
-            height: 600,
+            width: 1024,
+            height: 768,
             resizable: false,
             ..Default::default()
         })
