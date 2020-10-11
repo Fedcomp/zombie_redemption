@@ -4,9 +4,14 @@ version = "0.0.1"
 authors = ["Fedcomp"]
 edition = "2018"
 
+[dependencies.bevy]
+git = "https://github.com/bevyengine/bevy.git"
+rev = "f6fc76db1da0fa9c6dc67f7b3f0c288904f0eec9"
+
 [dependencies]
-bevy = "0.2.1"
 log = "0.4.11"
 env_logger = "0.7.1"
 tiled = "0.9.3"
 anyhow = "1.0.33"
+
+
