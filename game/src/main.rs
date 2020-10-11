@@ -1,11 +1,14 @@
 mod assets;
+mod components;
+mod events;
 mod loaders;
 mod plugins;
+mod systems;
 
 use env_logger::Env;
 use bevy::prelude::*;
-use crate::assets::Map;
 use crate::plugins::MapPlugin;
+use crate::events::MapEvents::{self, LoadMap};
 
 const GAME_NAME: &str = "Zombie Redemption";
 
@@ -31,9 +34,9 @@ fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut materials: ResMut<Assets<ColorMaterial>>,
+    mut map_events: ResMut<Events<MapEvents>>,
 ) {
     let texture_handle = asset_server.load("assets/player.png").unwrap();
-    let map_handle = asset_server.load::<Map, &str>("assets/maps/zr_test.tmx").expect("Failed to load map");
 
     commands
         .spawn(Camera2dComponents::default())
@@ -41,4 +44,6 @@ fn setup(
             material: materials.add(texture_handle.into()),
             ..Default::default()
         });
+
+    map_events.send(LoadMap("zr_test".into()));
 }

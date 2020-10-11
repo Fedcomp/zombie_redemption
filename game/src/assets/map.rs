@@ -1,9 +1,9 @@
 pub struct Map {
-    map: tiled::Map
+    pub source: tiled::Map
 }
 
 impl Map {
-    pub fn new(map: tiled::Map) -> Self {
-        Map { map }
+    pub fn new(source: tiled::Map) -> Self {
+        Map { source }
     }
 }
