@@ -1,8 +1,11 @@
+use env_logger::Env;
 use bevy::prelude::*;
 
 const GAME_NAME: &str = "Zombie Redemption";
 
 fn main() {
+    env_logger::from_env(Env::default().default_filter_or("info")).init();
+
     App::build()
         .add_resource(WindowDescriptor {
             title: GAME_NAME.into(),
