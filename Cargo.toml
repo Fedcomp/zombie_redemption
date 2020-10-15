@@ -3,6 +3,9 @@ members = [
     "game"
 ]
 
+[profile.dev]
+opt-level = 3
+
 [profile.release]
 codegen-units = 1
 opt-level = 3
