@@ -32,18 +32,8 @@ fn main() {
 
 fn setup(
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
     mut map_events: ResMut<Events<MapEvents>>,
 ) {
-    let texture_handle = asset_server.load("assets/player.png").unwrap();
-
-    commands
-        .spawn(Camera2dComponents::default())
-        .spawn(SpriteComponents {
-            material: materials.add(texture_handle.into()),
-            ..Default::default()
-        });
-
+    commands.spawn(Camera2dComponents::default());
     map_events.send(LoadMap("zr_test".into()));
 }
