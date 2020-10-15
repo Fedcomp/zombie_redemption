@@ -1,6 +1,7 @@
 use std::collections::{HashSet, HashMap};
 use bevy::prelude::*;
-use rapier2d::{geometry::ColliderBuilder, dynamics::RigidBodyBuilder};
+use bevy_rapier2d::rapier::geometry::ColliderBuilder;
+use bevy_rapier2d::rapier::dynamics::RigidBodyBuilder;
 use tiled::PropertyValue;
 use crate::events::{MapEvents, MapEventsListener, MapAssetsListener};
 use crate::assets::Map;
@@ -81,6 +82,9 @@ pub fn process_map_change(
 
             // Place blocks in the world
             for layer in map.layers.iter() {
+
+                let layer_collide = layer.properties.get("collide") == Some(&PropertyValue::BoolValue(true));
+
                 let layer_tiles = match &layer.tiles {
                     tiled::LayerData::Finite(layers) => layers,
                     _ => panic!("No support for infinite maps")
@@ -92,25 +96,25 @@ pub fn process_map_change(
                             continue;
                         }
 
-                        //Center the map at zero cords
+                        // Center the map at zero cords
                         let tile_x = (column as f32) * 32.0 - (map_size_x as f32) * 16.0;
                         let tile_y = (line as f32) * 32.0 - (map_size_y as f32) * 16.0;
 
-                        if layer.properties.get("collide").contains(&&PropertyValue::BoolValue(true)) {
-                            //Implement as super collision object later (rapier doesn't expose it yet)
-                            let rigid_body = RigidBodyBuilder::new_static()
-                                            .translation(tile_x,tile_y);
-                            let collider = ColliderBuilder::cuboid(16.0, 16.0);
-                            commands.spawn((rigid_body, collider));
-                        }
-
                         let material = materials_map.get(&tile.gid).expect(&format!("Unknown tile material {}", &tile.gid));
-                        commands
+                        let cmds = commands
                             .spawn(SpriteComponents {
                                 material: *material,
                                 transform: Transform::from_scale(1.0).with_translation(Vec3::new(tile_x, tile_y, 0.0)),
                                 ..Default::default()
                             });
+
+                        if layer_collide {
+                            //TODO: Implement as super collision object later (rapier doesn't support it yet)
+                            let rigid_body = RigidBodyBuilder::new_static()
+                                            .translation(tile_x,tile_y);
+                            let collider = ColliderBuilder::cuboid(16.0, 16.0);
+                            cmds.with(rigid_body).with(collider);
+                        }
                     }
                 }
             }

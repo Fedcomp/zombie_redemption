@@ -1,4 +1,3 @@
-#![feature(option_result_contains)]
 mod assets;
 mod components;
 mod events;
@@ -11,11 +10,11 @@ use bevy::prelude::*;
 use crate::plugins::MapPlugin;
 use crate::events::MapEvents::{self, LoadMap};
 use crate::plugins::DebugUiPlugin;
-use bevy_rapier2d::{na::Vector2, physics::{RapierConfiguration, RapierPhysicsPlugin}};
-use bevy_rapier2d::render::RapierRenderPlugin;
-use rapier2d::dynamics::RigidBodyBuilder;
-use rapier2d::geometry::ColliderBuilder;
-use rapier2d::pipeline::PhysicsPipeline;
+
+use bevy_rapier2d::na::Vector2;
+use bevy_rapier2d::physics::{RapierConfiguration, RapierPhysicsPlugin};
+use bevy_rapier2d::rapier::geometry::ColliderBuilder;
+use bevy_rapier2d::rapier::dynamics::RigidBodyBuilder;
 
 const GAME_NAME: &str = "Zombie Redemption";
 
