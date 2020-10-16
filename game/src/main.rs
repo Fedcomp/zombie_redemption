@@ -48,9 +48,7 @@ fn setup(
     mut commands: Commands,
     mut map_events: ResMut<Events<MapEvents>>,
 ) {
-    commands
-        .spawn(Camera2dComponents::default());
-
+    commands.spawn(Camera2dComponents::default());
     map_events.send(LoadMap("zr_test".into()));
 }
 
