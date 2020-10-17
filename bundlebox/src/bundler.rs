@@ -1,6 +1,9 @@
 use anyhow::bail;
 use std::fs::create_dir_all;
 use std::path::{Path, PathBuf};
+use walkdir::WalkDir;
+
+const RESOURCE_EXTENSION: &str = ".resource";
 
 pub struct Bundler {
     source_dir: PathBuf,
@@ -41,6 +44,23 @@ impl Bundler {
             );
         }
 
+        let file_iterator = WalkDir::new(&self.source_dir)
+            .into_iter()
+            .filter_map(Result::ok)
+            .filter(|f| f.file_type().is_file())
+            .map(|f| f.file_name().to_owned() )
+            .filter(|path| path.to_string_lossy().ends_with(RESOURCE_EXTENSION));
+
+        for path in file_iterator {
+            self.process_resource(path)?;
+        }
+
+        Ok(())
+    }
+
+    pub fn process_resource<P: AsRef<Path>>(&self, path: P) -> anyhow::Result<()> {
+        let path = self.source_dir.join(path);
+        dbg!(path);
         Ok(())
     }
 }
