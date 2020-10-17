@@ -1,9 +1,12 @@
 use anyhow::bail;
 use clap::{App, Arg};
+use env_logger::Env;
 use std::fs::create_dir_all;
 use std::path::PathBuf;
 
 fn main() -> anyhow::Result<()> {
+    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+
     let args = App::new(env!("CARGO_PKG_NAME"))
         .version(env!("CARGO_PKG_VERSION"))
         .author(env!("CARGO_PKG_AUTHORS"))
