@@ -1,6 +1,7 @@
 [workspace]
 members = [
-    "game"
+    "game",
+    "bundlebox"
 ]
 
 [profile.dev]
