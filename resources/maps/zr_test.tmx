@@ -3,7 +3,7 @@
  <tileset firstgid="1" name="base" tilewidth="32" tileheight="32" tilecount="3" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
-   <image width="32" height="32" source="metal_block.png"/>
+   <image width="32" height="32" source="../tiles/metal_block.svg"/>
   </tile>
   <tile id="1">
    <image width="32" height="32" source="metal_background.png"/>
