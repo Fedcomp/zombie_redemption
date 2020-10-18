@@ -1,4 +1,5 @@
 mod bundler;
+mod processor;
 
 use crate::bundler::Bundler;
 use clap::{App, Arg};
@@ -6,7 +7,7 @@ use env_logger::Env;
 use std::path::PathBuf;
 
 fn main() -> anyhow::Result<()> {
-    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+    env_logger::Builder::from_env(Env::default().default_filter_or("debug")).init();
 
     let args = App::new(env!("CARGO_PKG_NAME"))
         .version(env!("CARGO_PKG_VERSION"))
@@ -24,6 +25,12 @@ fn main() -> anyhow::Result<()> {
                 .required(true)
                 .index(2),
         )
+        .arg(
+            Arg::with_name("ENTRY")
+                .help("A file that will be used as an entrypoint")
+                .required(true)
+                .index(3),
+        )
         .get_matches();
 
     let source_directory: PathBuf = args
@@ -34,6 +41,7 @@ fn main() -> anyhow::Result<()> {
         .value_of("DST_DIR")
         .expect("DST_DIR is required")
         .into();
+    let entrypoint: PathBuf = args.value_of("ENTRY").expect("ENTRY is required").into();
 
-    Bundler::new(source_directory, destination_directory).run()
+    Bundler::new(source_directory, destination_directory, entrypoint).run()
 }

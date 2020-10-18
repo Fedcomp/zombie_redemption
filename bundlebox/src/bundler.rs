@@ -1,24 +1,36 @@
+use crate::processor::{Asset, Processor};
 use anyhow::bail;
-use std::fs::create_dir_all;
+use log::{debug, info};
+use std::fs::{self, create_dir_all};
 use std::path::{Path, PathBuf};
-use walkdir::WalkDir;
-
-const RESOURCE_EXTENSION: &str = ".resource";
 
 pub struct Bundler {
     source_dir: PathBuf,
     destination_dir: PathBuf,
+    entrypoint: PathBuf,
+    pipeline: Vec<Box<dyn Processor>>,
 }
 
 impl Bundler {
-    pub fn new<P: AsRef<Path>>(source_dir: P, destination_dir: P) -> Self {
+    pub fn new<P: AsRef<Path>>(source_dir: P, destination_dir: P, entrypoint: P) -> Self {
+        let source_dir = source_dir.as_ref().to_owned();
+        let destination_dir = destination_dir.as_ref().to_owned();
+        let entrypoint = entrypoint.as_ref().to_owned();
+
         Self {
-            source_dir: source_dir.as_ref().to_owned(),
-            destination_dir: destination_dir.as_ref().to_owned(),
+            source_dir,
+            destination_dir,
+            entrypoint,
+            pipeline: Vec::new(),
         }
     }
 
-    pub fn run(&self) -> anyhow::Result<()> {
+    pub fn add_processor(mut self, processor: Box<dyn Processor>) -> Self {
+        self.pipeline.push(processor);
+        self
+    }
+
+    pub fn run(&mut self) -> anyhow::Result<()> {
         if !self.source_dir.exists() {
             bail!(
                 "Source directory does not exist: {}",
@@ -44,23 +56,38 @@ impl Bundler {
             );
         }
 
-        let file_iterator = WalkDir::new(&self.source_dir)
-            .into_iter()
-            .filter_map(Result::ok)
-            .filter(|f| f.file_type().is_file())
-            .map(|f| f.file_name().to_owned() )
-            .filter(|path| path.to_string_lossy().ends_with(RESOURCE_EXTENSION));
+        let entrypoint_path = self.source_dir.join(&self.entrypoint);
 
-        for path in file_iterator {
-            self.process_resource(path)?;
+        if !entrypoint_path.exists() {
+            bail!("Entrypoint does not exists: {}", self.entrypoint.display());
         }
 
-        Ok(())
+        if !entrypoint_path.is_file() {
+            bail!("Entrypoint is not a file: {}", self.entrypoint.display());
+        }
+
+        info!("Entering entrypoint: {}", self.entrypoint.display());
+        let contents = Box::new(fs::File::open(&entrypoint_path)?);
+        let asset = Asset::new(&entrypoint_path, contents);
+        self.process_asset(asset)
     }
 
-    pub fn process_resource<P: AsRef<Path>>(&self, path: P) -> anyhow::Result<()> {
-        let path = self.source_dir.join(path);
-        dbg!(path);
+    pub fn process_asset(&mut self, asset: Asset) -> anyhow::Result<()> {
+        debug!("Processing asset {}", asset);
+
+        let mut asset = Some(asset);
+        let mut additional_assets: Vec<Asset> = Vec::new();
+        for processor in self.pipeline.iter_mut() {
+            match asset {
+                Some(a) => asset = processor.process(a, &mut additional_assets)?,
+                None => break,
+            };
+        }
+
+        for asset in additional_assets.into_iter() {
+            self.process_asset(asset)?;
+        }
+
         Ok(())
     }
 }

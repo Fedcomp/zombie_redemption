@@ -759,7 +759,6 @@ dependencies = [
  "clap",
  "env_logger 0.8.1",
  "log",
- "walkdir",
 ]
 
 [[package]]
