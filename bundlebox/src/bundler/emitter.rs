@@ -2,6 +2,8 @@ use std::path::PathBuf;
 use crate::processor::Asset;
 use log::info;
 use std::mem;
+use std::fs;
+use std::io;
 
 /// Emit files and assets
 pub struct Emitter {
@@ -17,9 +19,10 @@ impl Emitter {
         }
     }
 
-    pub fn emit_file(&self, asset: Asset) -> anyhow::Result<()> {
+    pub fn emit_file(&self, mut asset: Asset) -> anyhow::Result<()> {
         let output_path = self.output_directory.join(asset.path);
         info!("Producing {}", output_path.display());
+        io::copy(&mut asset.contents, &mut fs::File::create(output_path)?)?;
         Ok(())
     }
 
