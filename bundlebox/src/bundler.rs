@@ -39,7 +39,7 @@ impl <IO: Processor + Default> Bundler<IO> {
         let entrypoint_path = self.source_dir.join(&self.entrypoint);
         info!("Entering entrypoint: {}", self.entrypoint.display());
         let contents = Box::new(fs::File::open(&entrypoint_path)?);
-        let asset = Asset::new(&entrypoint_path, contents);
+        let asset = Asset::new(&self.entrypoint, contents);
         self.process_asset(asset)
     }
 
