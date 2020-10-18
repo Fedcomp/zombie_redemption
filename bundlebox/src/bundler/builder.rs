@@ -34,7 +34,7 @@ impl <IO: Processor + Default> Builder<IO> {
         self
     }
 
-    pub fn processor(&mut self, processor: IO) -> &mut Self {
+    pub fn pipeline(&mut self, processor: IO) -> &mut Self {
         self.pipeline = processor;
         self
     }
