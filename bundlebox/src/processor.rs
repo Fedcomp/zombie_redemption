@@ -1,6 +1,8 @@
+mod copy_processor;
 mod skip_processor;
 
 pub use skip_processor::SkipProcessor;
+pub use copy_processor::CopyProcessor;
 
 use std::fmt;
 use std::io::Read;

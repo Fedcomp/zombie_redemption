@@ -5,7 +5,7 @@ use crate::bundler::Bundler;
 use clap::{App, Arg};
 use env_logger::Env;
 use std::path::PathBuf;
-use crate::processor::SkipProcessor;
+use crate::processor::CopyProcessor;
 
 fn main() -> anyhow::Result<()> {
     env_logger::Builder::from_env(Env::default().default_filter_or("trace")).init();
@@ -44,12 +44,12 @@ fn main() -> anyhow::Result<()> {
         .into();
     let entrypoint: PathBuf = args.value_of("ENTRY").expect("ENTRY is required").into();
 
-    let skip_processor = SkipProcessor::default();
+    let copy_processor = CopyProcessor::default();
 
     Bundler::build()
         .source_directory(source_directory)
         .output_directory(destination_directory)
         .entrypoint(entrypoint)
-        .processor(skip_processor)
+        .processor(copy_processor)
         .run()
 }

@@ -18,8 +18,7 @@ impl Emitter {
     }
 
     pub fn emit_file(&self, asset: Asset) -> anyhow::Result<()> {
-        let out_path = self.output_directory.join(asset.path);
-        info!("Producing {}", out_path.display());
+        info!("Producing {}", asset);
         Ok(())
     }
 

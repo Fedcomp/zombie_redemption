@@ -46,6 +46,7 @@ impl <IO: Processor + Default> Bundler<IO> {
     pub fn process_asset(&mut self, asset: Asset) -> anyhow::Result<()> {
         debug!("Processing asset {}", asset);
         self.pipeline.process(asset, &mut self.emitter)?;
+        
         let additional_assets = self.emitter.take_emmited_assets();
         for asset in additional_assets.into_iter() {
             self.process_asset(asset)?;
