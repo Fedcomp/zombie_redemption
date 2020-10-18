@@ -1,6 +1,6 @@
 use std::collections::{HashSet, HashMap};
 use bevy::prelude::*;
-use bevy_rapier2d::rapier::geometry::ColliderBuilder;
+use bevy_rapier2d::{rapier::geometry::ColliderBuilder, physics::RapierConfiguration};
 use bevy_rapier2d::rapier::dynamics::RigidBodyBuilder;
 use tiled::PropertyValue;
 use crate::events::{MapEvents, MapEventsListener, MapAssetsListener};
@@ -34,6 +34,7 @@ pub fn process_map_change(
     map_asset_events: Res<Events<AssetEvent<Map>>>,
     maps: Res<Assets<Map>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
+    rapier_conf: Res<RapierConfiguration>,
     mut query: Query<(
         Entity,
         &Handle<Map>,
@@ -58,6 +59,8 @@ pub fn process_map_change(
         };
     }
 
+    let phys_scale = rapier_conf.scale;
+
     for changed_map in changed_maps.iter() {
         let map = &maps.get(changed_map)
                             .expect("Failed to get changed map struct").source;
@@ -78,7 +81,31 @@ pub fn process_map_change(
                 }
             }
 
-            let (map_size_x,map_size_y)  = (map.width,map.height);
+            for objgroup in map.object_groups.iter() {
+                for object in objgroup.objects.iter() {
+                    let object_x = object.x;
+                    //TODO: MAKE THIS LESS UGLY
+                    let object_y = ((map.height * map.tile_height) as f32) - object.y;
+
+                    let width = object.width;
+                    let height = object.height;
+                    
+                    let material = materials_map.get(&object.gid).expect(&format!("Unknown object material {}", &object.gid));
+
+                    let rot = object.rotation.to_radians();
+
+                    let rot_offset = (rot.cos() * width + rot.sin() * height - width,rot.cos() * height - rot.sin() * width - height);
+
+                    let body = RigidBodyBuilder::new_dynamic().translation(object_x/phys_scale + rot_offset.0, object_y/phys_scale + rot_offset.1).rotation(rot);
+                    let collider = ColliderBuilder::cuboid(width, height);
+
+                    commands.spawn(SpriteComponents {
+                        material: *material,
+                        transform: Transform::from_non_uniform_scale(Vec3::new(width/(map.tile_width as f32),height/(map.tile_height as f32),0.0)),
+                        ..Default::default()
+                    }).with(body).with(collider);
+                }
+            }
 
             // Place blocks in the world
             for layer in map.layers.iter() {
@@ -96,23 +123,22 @@ pub fn process_map_change(
                             continue;
                         }
 
-                        // Center the map at zero cords
-                        let tile_x = (column as f32) * 32.0 - (map_size_x as f32) * 16.0;
-                        let tile_y = (line as f32) * 32.0 - (map_size_y as f32) * 16.0;
+                        let tile_x = ((column as u32)  * map.tile_width) as f32;
+                        let tile_y = ((line as u32) * map.tile_height) as f32;
 
                         let material = materials_map.get(&tile.gid).expect(&format!("Unknown tile material {}", &tile.gid));
                         let cmds = commands
                             .spawn(SpriteComponents {
                                 material: *material,
-                                transform: Transform::from_scale(1.0).with_translation(Vec3::new(tile_x, tile_y, 0.0)),
+                                transform: Transform::from_translation(Vec3::new(tile_x, tile_y, 0.0)),
                                 ..Default::default()
                             });
 
                         if layer_collide {
                             //TODO: Implement as super collision object later (rapier doesn't support it yet)
                             let rigid_body = RigidBodyBuilder::new_static()
-                                            .translation(tile_x,tile_y);
-                            let collider = ColliderBuilder::cuboid(16.0, 16.0);
+                                            .translation(tile_x/phys_scale,tile_y/phys_scale);
+                            let collider = ColliderBuilder::cuboid(map.tile_width as f32, map.tile_height as f32);
                             cmds.with(rigid_body).with(collider);
                         }
                     }

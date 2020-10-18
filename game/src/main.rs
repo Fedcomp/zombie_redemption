@@ -34,13 +34,14 @@ fn main() {
         .add_plugin(RapierPhysicsPlugin)
         .add_resource(RapierConfiguration {
             gravity: Vector2::new(0.0,-100.0),
+            scale: 0.5,
             ..Default::default()
         })
         //.add_plugin(RapierRenderPlugin)
         .add_plugin(MapPlugin)
         .add_plugin(DebugUiPlugin)
         .add_startup_system(setup.system())
-        .add_startup_system(setup_physics.system())
+        //.add_startup_system(setup_physics.system())
         .run();
 }
 
@@ -48,7 +49,10 @@ fn setup(
     mut commands: Commands,
     mut map_events: ResMut<Events<MapEvents>>,
 ) {
-    commands.spawn(Camera2dComponents::default());
+    commands.spawn(Camera2dComponents {
+        transform: Transform::from_scale(1.0),
+        ..Default::default()
+    });
     map_events.send(LoadMap("zr_test".into()));
 }
 
@@ -73,7 +77,7 @@ pub fn setup_physics(mut commands: Commands,asset_server: Res<AssetServer>,mut m
             let y = j as f32 * shift + centery + 0.0;
 
             // Build the rigid body.
-            let body = RigidBodyBuilder::new_dynamic().translation(x, y);
+            let body = RigidBodyBuilder::new_dynamic().translation(x*2.0, y*2.0);
             let collider = ColliderBuilder::cuboid(rad, rad).density(1.0);
 
             commands.spawn(SpriteComponents {

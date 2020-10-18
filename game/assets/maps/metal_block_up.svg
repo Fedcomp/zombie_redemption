@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="32"
+   height="32"
+   viewBox="0 0 8.4666665 8.4666669"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="metal_block_up.svg">
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient839">
+      <stop
+         style="stop-color:#989898;stop-opacity:1"
+         offset="0"
+         id="stop835" />
+      <stop
+         style="stop-color:#ebebeb;stop-opacity:1"
+         offset="1"
+         id="stop837" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient839"
+       id="linearGradient845"
+       x1="4.3694839"
+       y1="0.05713553"
+       x2="4.3694839"
+       y2="8.4732637"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.93090915,0,0,0.93090916,0.29248487,0.29248501)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.313708"
+     inkscape:cx="21.3464"
+     inkscape:cy="15.225972"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     units="px"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:window-width="788"
+     inkscape:window-height="868"
+     inkscape:window-x="804"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Слой 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:1;fill:url(#linearGradient845);fill-opacity:1;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:0.58497;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="rect10"
+       width="7.8816967"
+       height="7.8816972"
+       x="0.29248485"
+       y="0.292485" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 3.2008418,2.2608065 c 0.092982,0 0.1804114,-0.2022435 0.2202778,-0.2686859 0.050708,-0.084511 0.2284444,-0.106957 0.2797739,-0.2096155 0.1626629,-0.325326 -0.1725811,0.1951403 0.2365557,-0.3783604 0.016323,-0.02288 0.024462,-0.053062 0.046772,-0.070158 0.036435,-0.02792 0.082475,-0.040324 0.1237133,-0.060485 0.051976,0.021263 0.103077,0.044801 0.1559264,0.063788 0.080111,0.028781 0.1914155,-0.014241 0.2765021,0 0.08153,0.013645 0.1539187,0.05417 0.2338609,0.070158 0.022932,0.00459 0.047972,-0.0074 0.070158,0 0.074693,0.024898 0.1411018,0.076148 0.2104748,0.093544 0.046077,0.011555 0.2156267,0.01039 0.2405523,0.073435 0.01317,0.03331 0.060884,0.085616 0.069867,0.1124534 0.049247,0.030694 -0.012233,0.079357 0,0.1160576 0.018784,0.056352 0.045288,0.07899 0.067649,0.1361065 0.01299,0.03318 -0.011361,0.081653 0,0.1154531 0.016144,0.048031 0.049272,0.1167536 0.087567,0.1550505"
+       id="path52" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 4.1079345,1.2735017 c 0.033257,0.078083 0.074992,0.1530755 0.099771,0.2342477 0.039029,0.127856 0,0.3231965 0,0.464747 0,0.3299064 0,0.6598128 0,0.9897193 0,0.088131 0.031614,0.5083185 -0.038645,0.5785771"
+       id="path54" />
+  </g>
+</svg>
