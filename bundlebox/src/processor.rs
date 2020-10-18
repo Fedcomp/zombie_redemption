@@ -1,11 +1,15 @@
+mod skip_processor;
+
+pub use skip_processor::SkipProcessor;
+
 use std::fmt;
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use crate::bundler::Bundler;
+use crate::bundler::Emitter;
 
 pub struct Asset {
-    path: PathBuf,
-    contents: Box<dyn Read>,
+    pub path: PathBuf,
+    pub contents: Box<dyn Read>,
 }
 
 impl Asset {
@@ -24,5 +28,5 @@ impl fmt::Display for Asset {
 }
 
 pub trait Processor {
-    fn process(&mut self, asset: Asset, additional_assets: &mut Vec<Asset>) -> anyhow::Result<Option<Asset>>;
+    fn process(&mut self, asset: Asset, emitter: &mut Emitter) -> anyhow::Result<()>;
 }

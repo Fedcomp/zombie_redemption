@@ -5,9 +5,10 @@ use crate::bundler::Bundler;
 use clap::{App, Arg};
 use env_logger::Env;
 use std::path::PathBuf;
+use crate::processor::SkipProcessor;
 
 fn main() -> anyhow::Result<()> {
-    env_logger::Builder::from_env(Env::default().default_filter_or("debug")).init();
+    env_logger::Builder::from_env(Env::default().default_filter_or("trace")).init();
 
     let args = App::new(env!("CARGO_PKG_NAME"))
         .version(env!("CARGO_PKG_VERSION"))
@@ -43,5 +44,12 @@ fn main() -> anyhow::Result<()> {
         .into();
     let entrypoint: PathBuf = args.value_of("ENTRY").expect("ENTRY is required").into();
 
-    Bundler::new(source_directory, destination_directory, entrypoint).run()
+    let skip_processor = SkipProcessor::default();
+
+    Bundler::build()
+        .source_directory(source_directory)
+        .output_directory(destination_directory)
+        .entrypoint(entrypoint)
+        .processor(skip_processor)
+        .run()
 }
