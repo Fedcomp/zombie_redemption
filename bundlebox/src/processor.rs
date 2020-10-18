@@ -1,13 +1,15 @@
 mod copy_processor;
+mod either_processor;
 mod skip_processor;
 
-pub use skip_processor::SkipProcessor;
 pub use copy_processor::CopyProcessor;
+pub use either_processor::EitherProcessor;
+pub use skip_processor::SkipProcessor;
 
+use crate::bundler::Emitter;
 use std::fmt;
 use std::io::Read;
 use std::path::{Path, PathBuf};
-use crate::bundler::Emitter;
 
 pub struct Asset {
     pub path: PathBuf,

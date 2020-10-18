@@ -1,24 +1,35 @@
-use crate::processor::Processor;
-use std::path::{Path, PathBuf};
 use super::{Bundler, Emitter};
-use log::warn;
+use crate::processor::Processor;
 use anyhow::bail;
+use log::warn;
 use std::fs::create_dir_all;
 use std::mem;
+use std::path::{Path, PathBuf};
 
 const DEFAULT_SOURCE_DIRECTORY: &str = "source";
 const DEFAULT_OUTPUT_DIRECTORY: &str = "build";
 const DEFAULT_ENTRYPOINT: &str = "index.ron";
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Builder<IO: Processor> {
     source_directory: Option<PathBuf>,
     output_directory: Option<PathBuf>,
     entrypoint: Option<PathBuf>,
-    pipeline: IO,
+    pipeline: Option<IO>,
 }
 
-impl <IO: Processor + Default> Builder<IO> {
+impl<IO: Processor> Default for Builder<IO> {
+    fn default() -> Self {
+        Builder {
+            source_directory: None,
+            output_directory: None,
+            entrypoint: None,
+            pipeline: None,
+        }
+    }
+}
+
+impl<IO: Processor> Builder<IO> {
     pub fn source_directory<P: AsRef<Path>>(&mut self, path: P) -> &mut Self {
         self.source_directory = Some(path.as_ref().to_owned());
         self
@@ -35,7 +46,7 @@ impl <IO: Processor + Default> Builder<IO> {
     }
 
     pub fn pipeline(&mut self, processor: IO) -> &mut Self {
-        self.pipeline = processor;
+        self.pipeline = Some(processor);
         self
     }
 
@@ -73,7 +84,10 @@ impl <IO: Processor + Default> Builder<IO> {
         });
 
         if !output_directory.exists() {
-            warn!("Output directory does not exists, creating '{}'", output_directory.display());
+            warn!(
+                "Output directory does not exists, creating '{}'",
+                output_directory.display()
+            );
             create_dir_all(&output_directory)?;
         }
 
@@ -103,15 +117,13 @@ impl <IO: Processor + Default> Builder<IO> {
             bail!("Entrypoint is not a file: {}", entrypoint_path.display());
         }
 
-        let pipeline = mem::take(&mut self.pipeline);
+        let pipeline = match mem::take(&mut self.pipeline) {
+            Some(p) => p,
+            None => bail!("No pipeline specified"),
+        };
 
         let emitter = Emitter::new(output_directory);
-        let mut bundler = Bundler::new(
-            source_directory,
-            entrypoint,
-            emitter,
-            pipeline
-        );
+        let mut bundler = Bundler::new(source_directory, entrypoint, emitter, pipeline);
 
         bundler.run()
     }

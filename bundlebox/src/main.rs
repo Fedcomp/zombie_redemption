@@ -2,10 +2,10 @@ mod bundler;
 mod processor;
 
 use crate::bundler::Bundler;
+use crate::processor::{CopyProcessor, EitherProcessor, SkipProcessor};
 use clap::{App, Arg};
 use env_logger::Env;
 use std::path::PathBuf;
-use crate::processor::CopyProcessor;
 
 fn main() -> anyhow::Result<()> {
     env_logger::Builder::from_env(Env::default().default_filter_or("trace")).init();
@@ -45,11 +45,16 @@ fn main() -> anyhow::Result<()> {
     let entrypoint: PathBuf = args.value_of("ENTRY").expect("ENTRY is required").into();
 
     let copy_processor = CopyProcessor::default();
+    let skip_processor = SkipProcessor::default();
+    let ron_filter = EitherProcessor::new(skip_processor, copy_processor, |asset| {
+        asset.path.to_string_lossy().ends_with(".ron")
+    });
+    let pipeline = ron_filter;
 
     Bundler::build()
         .source_directory(source_directory)
         .output_directory(destination_directory)
         .entrypoint(entrypoint)
-        .processor(copy_processor)
+        .pipeline(pipeline)
         .run()
 }

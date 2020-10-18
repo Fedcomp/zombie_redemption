@@ -1,21 +1,21 @@
-use std::path::PathBuf;
 use crate::processor::Asset;
 use log::info;
-use std::mem;
 use std::fs;
 use std::io;
+use std::mem;
+use std::path::PathBuf;
 
 /// Emit files and assets
 pub struct Emitter {
     output_directory: PathBuf,
-    new_assets: Vec<Asset>
+    new_assets: Vec<Asset>,
 }
 
 impl Emitter {
     pub fn new(output_directory: PathBuf) -> Emitter {
         Emitter {
             output_directory,
-            new_assets: Vec::new()
+            new_assets: Vec::new(),
         }
     }
 
@@ -26,7 +26,7 @@ impl Emitter {
         Ok(())
     }
 
-    pub fn emit_asset(&mut self, asset: Asset){
+    pub fn emit_asset(&mut self, asset: Asset) {
         self.new_assets.push(asset);
     }
 
