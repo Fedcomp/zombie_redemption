@@ -2,7 +2,7 @@ mod bundler;
 mod processor;
 
 use crate::bundler::Bundler;
-use crate::processor::{ConfigProcessor, CopyProcessor, EitherProcessor};
+use crate::processor::{ConfigProcessor, CopyProcessor, EitherProcessor, SvgProcessor};
 use clap::{App, Arg};
 use env_logger::Env;
 use std::path::PathBuf;
@@ -44,9 +44,13 @@ fn main() -> anyhow::Result<()> {
         .into();
     let entrypoint: PathBuf = args.value_of("ENTRY").expect("ENTRY is required").into();
 
+    let svg_processor = SvgProcessor::default();
     let copy_processor = CopyProcessor::default();
     let config_processor = ConfigProcessor::default();
-    let ron_filter = EitherProcessor::new(config_processor, copy_processor, |asset| {
+    let svg_filter = EitherProcessor::new(svg_processor, copy_processor, |asset| {
+        asset.path.to_string_lossy().ends_with(".svg")
+    });
+    let ron_filter = EitherProcessor::new(config_processor, svg_filter, |asset| {
         asset.path.to_string_lossy().ends_with(".ron")
     });
     let pipeline = ron_filter;

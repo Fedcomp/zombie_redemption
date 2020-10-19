@@ -43,7 +43,7 @@ impl<IO: Processor> Bundler<IO> {
 
     pub fn process_assets(&mut self) -> anyhow::Result<()> {
         while let Some(asset) = self.asset_queue.pop_front() {
-            info!("Processing asset {}", asset);
+            info!("Processing {}", asset);
 
             let source_path = self.emitter.source_directory().join(&asset.path);
             if let Err(e) = self.pipeline.process(asset, &mut self.emitter) {
