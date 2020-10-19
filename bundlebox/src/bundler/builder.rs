@@ -122,8 +122,8 @@ impl<IO: Processor> Builder<IO> {
             None => bail!("No pipeline specified"),
         };
 
-        let emitter = Emitter::new(output_directory);
-        let mut bundler = Bundler::new(source_directory, entrypoint, emitter, pipeline);
+        let emitter = Emitter::new(source_directory, output_directory);
+        let mut bundler = Bundler::new(entrypoint, emitter, pipeline);
 
         bundler.run()
     }
