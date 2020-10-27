@@ -6,10 +6,10 @@
    <image width="32" height="32" source="../tiles/metal_block.svg"/>
   </tile>
   <tile id="1">
-   <image width="32" height="32" source="metal_background.png"/>
+   <image width="32" height="32" source="../tiles/metal_background.svg"/>
   </tile>
   <tile id="2">
-   <image width="32" height="32" source="metal_block_up.png"/>
+   <image width="32" height="32" source="../tiles/metal_block_up.svg"/>
   </tile>
  </tileset>
  <layer id="3" name="Background" width="32" height="32">
