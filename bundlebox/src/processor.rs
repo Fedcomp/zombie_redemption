@@ -3,12 +3,14 @@ mod copy_processor;
 mod either_processor;
 mod skip_processor;
 mod svg_processor;
+mod tiled_map_processor;
 
 pub use config_processor::ConfigProcessor;
 pub use copy_processor::CopyProcessor;
 pub use either_processor::EitherProcessor;
 pub use skip_processor::SkipProcessor;
 pub use svg_processor::SvgProcessor;
+pub use tiled_map_processor::TiledMapProcessor;
 
 use crate::bundler::Emitter;
 use std::fmt;

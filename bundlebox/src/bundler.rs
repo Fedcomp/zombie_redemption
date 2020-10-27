@@ -5,7 +5,7 @@ pub use self::builder::Builder;
 pub use self::emitter::Emitter;
 
 use crate::processor::{Asset, Processor};
-use log::{error, info};
+use log::{debug, error, info};
 use std::collections::VecDeque;
 use std::fs;
 use std::path::PathBuf;
@@ -43,7 +43,7 @@ impl<IO: Processor> Bundler<IO> {
 
     pub fn process_assets(&mut self) -> anyhow::Result<()> {
         while let Some(asset) = self.asset_queue.pop_front() {
-            info!("Processing {}", asset);
+            debug!("Processing {}", asset);
 
             let source_path = self.emitter.source_directory().join(&asset.path);
             if let Err(e) = self.pipeline.process(asset, &mut self.emitter) {

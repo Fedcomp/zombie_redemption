@@ -1,5 +1,5 @@
 (
     dependent_assets: [
-        "textures/missing.svg"
+        "maps/zr_test.tmx"
     ]
 )

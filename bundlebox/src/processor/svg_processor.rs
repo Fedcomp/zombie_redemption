@@ -34,10 +34,10 @@ impl Processor for SvgProcessor {
             stdout.trim()
         );
 
-        let mut new_path = asset.path.clone();
-        new_path.set_extension("png");
-        let new_asset = Asset::new(new_path, Box::new(output_file));
-        emitter.emit_asset(new_asset);
+        emitter.emit_asset(Asset::new(
+            asset.path.with_extension("png"),
+            Box::new(output_file),
+        ));
 
         Ok(())
     }

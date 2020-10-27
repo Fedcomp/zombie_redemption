@@ -762,6 +762,7 @@ dependencies = [
  "ron",
  "serde",
  "tempfile",
+ "xml-rs",
 ]
 
 [[package]]
