@@ -1,0 +1,5 @@
+(
+    dependent_assets: [
+        "fonts/FiraSans-Bold.ttf", "maps/zr_test.tmx"
+    ]
+)

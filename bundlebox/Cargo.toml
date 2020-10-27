@@ -1,0 +1,16 @@
+[package]
+name = "bundlebox"
+description = "Zombie Redemption asset optimizer/bundler"
+version = "0.0.1"
+authors = ["Fedcomp"]
+edition = "2018"
+
+[dependencies]
+clap = "2.33.3"
+anyhow = "1.0.33"
+log = "0.4.11"
+env_logger = "0.8.1"
+ron = "0.6.2"
+serde = "1.0.117"
+tempfile = "3.1.0"
+xml-rs = "0.8.3"
