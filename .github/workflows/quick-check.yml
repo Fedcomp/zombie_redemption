@@ -20,6 +20,18 @@ jobs:
           profile: minimal
           override: true
 
+    - name: Cargo cache
+      uses: actions/cache@v2
+      id: cache
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          cargo-${{ runner.os }}-
+
       - name: Run cargo check
         uses: actions-rs/cargo@v1
         with:
