@@ -50,7 +50,6 @@ jobs:
           profile: minimal
           override: true
 
-      - name: Run cargo build
       - name: Install libasound2-dev (dep of alsa-sys crate)
         run:  sudo apt install libasound2-dev
 
