@@ -60,7 +60,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: -p game
+          args: -p game --release
 
       - name: Download assets from build-assets job
         uses: actions/download-artifact@v2
@@ -78,7 +78,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: zombie_redemption_linux_x86_64
-          path: target/debug/game
+          path: target/release/game
 
   build-windows:
     runs-on: windows-2019
@@ -96,7 +96,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: -p game
+          args: -p game --release
 
       - name: Download assets from build-assets job
         uses: actions/download-artifact@v2
@@ -114,4 +114,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: zombie_redemption_windows
-          path: target/debug/game
+          path: target/release/game
