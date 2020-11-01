@@ -65,8 +65,13 @@ jobs:
           command: build
           args: -p game
       
-      - run: ls target/debug/
-      - run: ls game/assets
+      - name: Build game distro
+        uses: actions/upload-artifact@v2
+        with:
+          name: zombie_redemption
+          path: |
+            assets
+            target/debug/game
 
   build-windows:
     runs-on: windows-2019
