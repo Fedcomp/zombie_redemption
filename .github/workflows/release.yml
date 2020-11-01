@@ -54,17 +54,17 @@ jobs:
       - name: Install libudev-dev (dep of libudev-sys crate)
         run:  sudo apt install libudev-dev
 
-      - name: Download assets from build-assets job
-        uses: actions/download-artifact@v2
-        with:
-          name: assets
-          path: assets/assets
-
       - name: Build game
         uses: actions-rs/cargo@v1
         with:
           command: build
           args: -p game
+
+      - name: Download assets from build-assets job
+        uses: actions/download-artifact@v2
+        with:
+          name: assets
+          path: assets/assets
 
       - name: Bundle game assets
         uses: actions/upload-artifact@v2
