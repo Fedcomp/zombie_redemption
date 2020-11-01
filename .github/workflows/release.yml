@@ -1,6 +1,11 @@
 name: Build and release client
 
-on: [push]
+on:
+  push:
+  pull_request:
+  release:
+    types:
+      - created
 
 env:
   CARGO_TERM_COLOR: always
@@ -29,6 +34,39 @@ jobs:
         with:
           name: assets
           path: game/assets
+
+  build-linux:
+    runs-on: ubuntu-20.04
+    needs: [build-assets]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          override: true
+
+      - name: Run cargo build
+      - name: Install libasound2-dev (dep of alsa-sys crate)
+        run:  sudo apt install libasound2-dev
+
+      - name: Install libudev-dev (dep of libudev-sys crate)
+        run:  sudo apt install libudev-dev
+
+      - name: Download assets from build-assets job
+        uses: actions/download-artifact@v2
+        with:
+          name: assets
+
+      - name: Build game
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: -p game
+      
+      - run: ls target/debug/
+      - run: ls game/assets
 
   build-windows:
     runs-on: windows-2019
