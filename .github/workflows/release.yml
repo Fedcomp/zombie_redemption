@@ -58,6 +58,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: assets
+          path: assets/assets
 
       - name: Build game
         uses: actions-rs/cargo@v1
@@ -75,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: zombie_redemption
-          path: assets
+          path: assets/assets
 
   build-windows:
     runs-on: windows-2019
