@@ -66,17 +66,17 @@ jobs:
           command: build
           args: -p game
 
-      - name: Build game
-        uses: actions/upload-artifact@v2
-        with:
-          name: zombie_redemption
-          path: target/debug/game
-
-      - name: Build game distro
+      - name: Bundle game assets
         uses: actions/upload-artifact@v2
         with:
           name: zombie_redemption
           path: assets/assets
+
+      - name: Bundle game binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: zombie_redemption
+          path: target/debug/game
 
   build-windows:
     runs-on: windows-2019
