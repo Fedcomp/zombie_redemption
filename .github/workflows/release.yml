@@ -69,13 +69,13 @@ jobs:
       - name: Bundle game assets
         uses: actions/upload-artifact@v2
         with:
-          name: zombie_redemption
+          name: zombie_redemption_linux_x86_64
           path: assets/assets
 
       - name: Bundle game binary
         uses: actions/upload-artifact@v2
         with:
-          name: zombie_redemption
+          name: zombie_redemption_linux_x86_64
           path: target/debug/game
 
   build-windows:
