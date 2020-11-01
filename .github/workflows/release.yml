@@ -6,6 +6,30 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  build-assets:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Pull repository
+        uses: actions/checkout@v2
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          override: true
+
+      - name: Install inkscape (to process svg into png)
+        run:  sudo apt install inkscape
+
+      - name: Process resources into assets
+        run: ./build.sh
+
+      - name: Archive assets as an artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: assets
+          path: game/assets
+
   build-windows:
     runs-on: windows-2019
     steps:
