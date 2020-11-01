@@ -1,4 +1,4 @@
-name: type-check
+name: Quick code check
 
 on: [push]
 
