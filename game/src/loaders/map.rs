@@ -1,19 +1,25 @@
-use std::io::BufReader;
-use std::path::Path;
-use bevy::asset::AssetLoader;
 use crate::assets::Map;
+use bevy::asset::{AssetLoader, LoadContext, LoadedAsset};
+use bevy::utils::BoxedFuture;
+use std::io::BufReader;
 
 #[derive(Default)]
 pub struct MapLoader;
 
-impl AssetLoader<Map> for MapLoader {
-    fn from_bytes(&self, asset_path: &Path, bytes: Vec<u8>) -> anyhow::Result<Map> {
-        let map = tiled::parse_with_path(BufReader::new(bytes.as_slice()), asset_path)?;
-        Ok(Map::new(map))
+impl AssetLoader for MapLoader {
+    fn load<'a>(
+        &'a self,
+        bytes: &'a [u8],
+        load_context: &'a mut LoadContext,
+    ) -> BoxedFuture<'a, anyhow::Result<()>> {
+        Box::pin(async move {
+            let map = tiled::parse_with_path(BufReader::new(bytes), load_context.path())?;
+            load_context.set_default_asset(LoadedAsset::new(Map::new(map)));
+            Ok(())
+        })
     }
 
     fn extensions(&self) -> &[&str] {
-        static EXTENSIONS: &[&str] = &["tmx"];
-        EXTENSIONS
+        &["tmx"]
     }
 }

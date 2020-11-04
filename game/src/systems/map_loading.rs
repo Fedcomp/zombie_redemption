@@ -16,8 +16,7 @@ pub fn process_map_loading(
     for map_event in state.reader.iter(&map_events) {
         match map_event {
             MapEvents::LoadMap(map_name) => {
-                let map_handle = asset_server.load::<Map, String>(format!("assets/maps/{}.tmx", map_name))
-                                                                .expect(&format!("Failed to load map {}", map_name));
+                let map_handle = asset_server.load(format!("maps/{}.tmx", map_name).as_str());
                 commands
                     .spawn(MapComponents { map_handle, ..Default::default() });
             }
@@ -45,13 +44,13 @@ pub fn process_map_change(
     let mut changed_maps = HashSet::<Handle<Map>>::new();
     for map_asset_event in state.reader.iter(&map_asset_events) {
         match map_asset_event {
-            AssetEvent::Created { handle } => {
-                changed_maps.insert(*handle);
+            AssetEvent::Created { ref handle } => {
+                changed_maps.insert(handle.clone_weak());
             }
-            AssetEvent::Modified { handle } => {
-                changed_maps.insert(*handle);
+            AssetEvent::Modified { ref handle } => {
+                changed_maps.insert(handle.clone_weak());
             }
-            AssetEvent::Removed { handle } => {
+            AssetEvent::Removed { ref handle } => {
                 // if mesh was modified and removed in the same update, ignore the modification
                 // events are ordered so future modification events are ok
                 changed_maps.remove(handle);
@@ -65,17 +64,15 @@ pub fn process_map_change(
         let map = &maps.get(changed_map)
                             .expect("Failed to get changed map struct").source;
 
-        for (_, _, mut materials_map) in &mut query.iter() {
+        for (_, _, mut materials_map) in query.iter_mut() {
             materials_map.clear();
 
             // Reload textures from tilesets
             for tileset in map.tilesets.iter() {
                 for tile in tileset.tiles.iter() {
                     for image in tile.images.iter() {
-                        let image_path = format!("assets/maps/{}", image.source);
-                        let texture_handle = asset_server.load(&image_path)
-                                                .expect(&format!("Failed to load tileset image at path: {}", image.source));
-
+                        let image_path = format!("maps/{}", image.source);
+                        let texture_handle = asset_server.load(image_path.as_str());
                         materials_map.insert(tileset.first_gid + tile.id, materials.add(texture_handle.into()));
                     }
                 }
@@ -100,8 +97,8 @@ pub fn process_map_change(
                     let collider = ColliderBuilder::cuboid(width, height);
 
                     commands.spawn(SpriteComponents {
-                        material: *material,
-                        transform: Transform::from_non_uniform_scale(Vec3::new(width/(map.tile_width as f32),height/(map.tile_height as f32),0.0)),
+                        material: material.clone(),
+                        transform: Transform::from_scale(Vec3::new(width/(map.tile_width as f32),height/(map.tile_height as f32),0.0)),
                         ..Default::default()
                     }).with(body).with(collider);
                 }
@@ -129,7 +126,7 @@ pub fn process_map_change(
                         let material = materials_map.get(&tile.gid).expect(&format!("Unknown tile material {}", &tile.gid));
                         let cmds = commands
                             .spawn(SpriteComponents {
-                                material: *material,
+                                material: material.clone(),
                                 transform: Transform::from_translation(Vec3::new(tile_x, tile_y, 0.0)),
                                 ..Default::default()
                             });
