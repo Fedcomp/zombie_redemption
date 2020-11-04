@@ -102,13 +102,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: assets
-          path: assets/assets
+          path: distro/assets
 
       - name: Bundle game assets
         uses: actions/upload-artifact@v2
         with:
           name: zombie_redemption_windows
-          path: assets/assets
+          path: distro/**
 
       - name: Bundle game binary
         uses: actions/upload-artifact@v2
