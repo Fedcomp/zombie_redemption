@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy::diagnostic::{Diagnostics,FrameTimeDiagnosticsPlugin};
 
 pub fn setup_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let font_handle = asset_server.load("assets/fonts/FiraSans-Bold.ttf");
+    let font_handle = asset_server.load("fonts/FiraSans-Bold.ttf");
     commands
         // 2d camera
         .spawn(UiCameraComponents::default())

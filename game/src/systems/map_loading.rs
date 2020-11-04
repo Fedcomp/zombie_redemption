@@ -16,7 +16,7 @@ pub fn process_map_loading(
     for map_event in state.reader.iter(&map_events) {
         match map_event {
             MapEvents::LoadMap(map_name) => {
-                let map_handle = asset_server.load(format!("assets/maps/{}.tmx", map_name).as_str());
+                let map_handle = asset_server.load(format!("maps/{}.tmx", map_name).as_str());
                 commands
                     .spawn(MapComponents { map_handle, ..Default::default() });
             }
@@ -71,7 +71,7 @@ pub fn process_map_change(
             for tileset in map.tilesets.iter() {
                 for tile in tileset.tiles.iter() {
                     for image in tile.images.iter() {
-                        let image_path = format!("assets/maps/{}", image.source);
+                        let image_path = format!("maps/{}", image.source);
                         let texture_handle = asset_server.load(image_path.as_str());
                         materials_map.insert(tileset.first_gid + tile.id, materials.add(texture_handle.into()));
                     }
