@@ -11,7 +11,7 @@ impl Plugin for MapPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
             .add_asset::<Map>()
-            .add_asset_loader::<Map, MapLoader>()
+            .add_asset_loader::<MapLoader>(MapLoader)
             .add_event::<MapEvents>()
             .init_resource::<MapEventsListener>()
             .add_system(process_map_loading.system())

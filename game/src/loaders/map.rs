@@ -6,7 +6,7 @@ use crate::assets::Map;
 #[derive(Default)]
 pub struct MapLoader;
 
-impl AssetLoader<Map> for MapLoader {
+impl AssetLoader for MapLoader {
     fn from_bytes(&self, asset_path: &Path, bytes: Vec<u8>) -> anyhow::Result<Map> {
         let map = tiled::parse_with_path(BufReader::new(bytes.as_slice()), asset_path)?;
         Ok(Map::new(map))

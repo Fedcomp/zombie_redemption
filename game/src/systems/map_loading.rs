@@ -16,8 +16,7 @@ pub fn process_map_loading(
     for map_event in state.reader.iter(&map_events) {
         match map_event {
             MapEvents::LoadMap(map_name) => {
-                let map_handle = asset_server.load::<Map, String>(format!("assets/maps/{}.tmx", map_name))
-                                                                .expect(&format!("Failed to load map {}", map_name));
+                let map_handle = asset_server.load(format!("assets/maps/{}.tmx", map_name).as_str());
                 commands
                     .spawn(MapComponents { map_handle, ..Default::default() });
             }
@@ -73,9 +72,7 @@ pub fn process_map_change(
                 for tile in tileset.tiles.iter() {
                     for image in tile.images.iter() {
                         let image_path = format!("assets/maps/{}", image.source);
-                        let texture_handle = asset_server.load(&image_path)
-                                                .expect(&format!("Failed to load tileset image at path: {}", image.source));
-
+                        let texture_handle = asset_server.load(image_path.as_str());
                         materials_map.insert(tileset.first_gid + tile.id, materials.add(texture_handle.into()));
                     }
                 }
@@ -101,7 +98,7 @@ pub fn process_map_change(
 
                     commands.spawn(SpriteComponents {
                         material: *material,
-                        transform: Transform::from_non_uniform_scale(Vec3::new(width/(map.tile_width as f32),height/(map.tile_height as f32),0.0)),
+                        transform: Transform::from_scale(Vec3::new(width/(map.tile_width as f32),height/(map.tile_height as f32),0.0)),
                         ..Default::default()
                     }).with(body).with(collider);
                 }
