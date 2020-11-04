@@ -5,11 +5,9 @@ authors = ["Fedcomp"]
 edition = "2018"
 
 [dependencies]
-bevy = "0.2.1"
-bevy_rapier2d = "0.3.1"
+bevy = "0.3.0"
+bevy_rapier2d = { git = "https://github.com/superdump/bevy_rapier.git", rev = "42d7e24c800bf1378ff30cf53a64124af39ef2b7" }
 log = "0.4.11"
 env_logger = "0.7.1"
 tiled = "0.9.3"
 anyhow = "1.0.33"
-
-
