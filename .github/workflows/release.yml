@@ -76,7 +76,7 @@ jobs:
       - name: Bundle game binary
         uses: actions/upload-artifact@v2
         with:
-          name: game_linux_x86_64
+          name: game_linux
           path: target/release/game
 
   build-windows:
@@ -106,7 +106,7 @@ jobs:
       - name: Bundle game binary
         uses: actions/upload-artifact@v2
         with:
-          name: game_windows_x86_64
+          name: game_windows
           path: target/release/game.exe
 
   bundle-distros:
@@ -120,42 +120,42 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: assets
-          path: linux_x86_64/assets
+          path: linux/assets
 
       - name: Download binary from build-linux job
         uses: actions/download-artifact@v2
         with:
-          name: game_linux_x86_64
-          path: linux_x86_64/
+          name: game_linux
+          path: linux/
 
       - name: Bundle linux distro
         uses: actions/upload-artifact@v2
         with:
-          name: zombie_redemption_linux_x86_64
-          path: linux_x86_64/**
+          name: zombie_redemption_linux
+          path: linux/**
 
       - name: Download assets from build-assets job for windows
         uses: actions/download-artifact@v2
         with:
           name: assets
-          path: windows_x86_64/assets
+          path: windows/assets
 
       - name: Download binary from build-windows job
         uses: actions/download-artifact@v2
         with:
-          name: game_windows_x86_64
-          path: windows_x86_64/
+          name: game_windows
+          path: windows/
 
       - name: Bundle windows distro
         uses: actions/upload-artifact@v2
         with:
-          name: zombie_redemption_windows_x86_64
-          path: windows_x86_64/**
+          name: zombie_redemption_windows
+          path: windows/**
 
       - name: Remove intermediate artifacts
         uses: geekyeggo/delete-artifact@v1
         with:
           name: |
             assets
-            game_linux_x86_64
-            game_windows_x86_64
+            game_linux
+            game_windows
