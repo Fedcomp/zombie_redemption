@@ -181,11 +181,15 @@ jobs:
       - name: "[linux] Remove distro directory"
         run: rm -rvf zombie_redemption
 
-      - name: "[linux] Bundle release"
-        uses: actions/upload-artifact@v2
+      - name: "[linux] Upload distro to release"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: zombie_redemption_linux_release
-          path: zombie_redemption.tar.gz
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./zombie_redemption.tar.gz
+          asset_name: zombie_redemption.tar.gz
+          asset_content_type: application/tar+gzip
 
       - name: "[linux] Remove distro artifact"
         uses: geekyeggo/delete-artifact@v1
@@ -206,11 +210,15 @@ jobs:
       - name: "[windows] Remove distro directory"
         run: rm -rvf zombie_redemption
 
-      - name: "[windows] Bundle release"
-        uses: actions/upload-artifact@v2
+      - name: "[windows] Upload distro to release"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: zombie_redemption_windows_release
-          path: zombie_redemption.zip
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./zombie_redemption.zip
+          asset_name: zombie_redemption.zip
+          asset_content_type: application/zip
 
       - name: "[windows] Remove distro artifact"
         uses: geekyeggo/delete-artifact@v1
