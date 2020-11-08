@@ -46,6 +46,7 @@ jobs:
         with:
           name: assets
           path: game/assets
+          retention-days: 2
 
   build-linux:
     runs-on: ubuntu-20.04
@@ -81,6 +82,7 @@ jobs:
         with:
           name: game_linux
           path: target/release/game
+          retention-days: 2
 
   build-windows:
     runs-on: windows-2019
@@ -110,6 +112,7 @@ jobs:
         with:
           name: game_windows
           path: target/release/game.exe
+          retention-days: 2
 
   bundle-distros:
     runs-on: ubuntu-20.04
@@ -135,6 +138,7 @@ jobs:
         with:
           name: zombie_redemption_linux
           path: linux/**
+          retention-days: 2
 
       - name: Download assets from build-assets job for windows
         uses: actions/download-artifact@v2
@@ -153,6 +157,7 @@ jobs:
         with:
           name: zombie_redemption_windows
           path: windows/**
+          retention-days: 2
 
       - name: Remove intermediate artifacts
         uses: geekyeggo/delete-artifact@v1
