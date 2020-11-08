@@ -161,7 +161,7 @@ jobs:
   upload-release:
     runs-on: ubuntu-20.04
     needs: [bundle-distros]
-    # if: github.event.release
+    if: github.event.release
     steps:
       - name: "[linux] Download distro"
         uses: actions/download-artifact@v2
