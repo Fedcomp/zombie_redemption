@@ -108,3 +108,54 @@ jobs:
         with:
           name: game_windows_x86_64
           path: target/release/game.exe
+
+  bundle-distros:
+    runs-on: ubuntu-20.04
+    needs:
+      - build-assets
+      - build-linux
+      - build-windows
+    steps:
+      - name: Download assets from build-assets job for linux
+        uses: actions/download-artifact@v2
+        with:
+          name: assets
+          path: linux_x86_64/assets
+
+      - name: Download binary from build-linux job
+        uses: actions/download-artifact@v2
+        with:
+          name: game_linux_x86_64
+          path: linux_x86_64/
+
+      - name: Bundle linux distro
+        uses: actions/upload-artifact@v2
+        with:
+          name: zombie_redemption_linux_x86_64
+          path: linux_x86_64/**
+
+      - name: Download assets from build-assets job for windows
+        uses: actions/download-artifact@v2
+        with:
+          name: assets
+          path: windows_x86_64/assets
+
+      - name: Download binary from build-windows job
+        uses: actions/download-artifact@v2
+        with:
+          name: game_windows_x86_64
+          path: windows_x86_64/
+
+      - name: Bundle windows distro
+        uses: actions/upload-artifact@v2
+        with:
+          name: zombie_redemption_windows_x86_64
+          path: windows_x86_64/**
+
+      - name: Remove intermediate artifacts
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: |
+            assets
+            game_linux_x86_64
+            game_windows_x86_64
