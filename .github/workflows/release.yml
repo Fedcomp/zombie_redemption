@@ -61,6 +61,12 @@ jobs:
       - name: Install libudev-dev (dep of libudev-sys crate)
         run:  sudo apt install libudev-dev
 
+      - name: Test game
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: -p game --release
+
       - name: Build game
         uses: actions-rs/cargo@v1
         with:
@@ -84,6 +90,12 @@ jobs:
         with:
           profile: minimal
           override: true
+
+      - name: Test game
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: -p game --release
 
       - name: Build game
         uses: actions-rs/cargo@v1
