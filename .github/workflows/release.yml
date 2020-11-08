@@ -2,6 +2,10 @@ name: Build and release client
 
 on:
   push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*.*'
   pull_request:
   release:
     types: [published]
