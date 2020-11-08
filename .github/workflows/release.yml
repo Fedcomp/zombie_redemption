@@ -67,22 +67,10 @@ jobs:
           command: build
           args: -p game --release
 
-      - name: Download assets from build-assets job
-        uses: actions/download-artifact@v2
-        with:
-          name: assets
-          path: distro/assets
-
-      - name: Bundle game assets
-        uses: actions/upload-artifact@v2
-        with:
-          name: zombie_redemption_linux_x86_64
-          path: distro/**
-
       - name: Bundle game binary
         uses: actions/upload-artifact@v2
         with:
-          name: zombie_redemption_linux_x86_64
+          name: game_linux_x86_64
           path: target/release/game
 
   build-windows:
@@ -97,26 +85,14 @@ jobs:
           profile: minimal
           override: true
 
-      - name: Run cargo build
+      - name: Build game
         uses: actions-rs/cargo@v1
         with:
           command: build
           args: -p game --release
 
-      - name: Download assets from build-assets job
-        uses: actions/download-artifact@v2
-        with:
-          name: assets
-          path: distro/assets
-
-      - name: Bundle game assets
-        uses: actions/upload-artifact@v2
-        with:
-          name: zombie_redemption_windows
-          path: distro/**
-
       - name: Bundle game binary
         uses: actions/upload-artifact@v2
         with:
-          name: zombie_redemption_windows
+          name: game_windows_x86_64
           path: target/release/game.exe
