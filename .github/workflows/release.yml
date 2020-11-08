@@ -1,0 +1,242 @@
+name: Build and release client
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*.*'
+  pull_request:
+    branches:
+      # Branches from forks have the form 'user:branch-name' so we only run
+      # this job on pull_request events for branches that look like fork
+      # branches. Without this we would end up running this job twice for non
+      # forked PRs, once for the push and then once for opening the PR.
+    - '**:**'
+  release:
+    types: [published]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-assets:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Pull repository
+        uses: actions/checkout@v2
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          override: true
+
+      - name: Install inkscape fresh version (to process svg into png)
+        run: |
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:inkscape.dev/stable
+          sudo apt-get install -y inkscape
+
+      - name: Test bundlebox
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: -p bundlebox
+
+      - name: Process resources into assets
+        run: ./build.sh
+
+      - name: Archive assets as an artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: assets
+          path: game/assets
+          retention-days: 2
+
+  build-linux:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Pull repository
+        uses: actions/checkout@v2
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          override: true
+
+      - name: Update ubuntu packages
+        run:  sudo apt-get update
+
+      - name: Install libasound2-dev (dep of alsa-sys crate)
+        run:  sudo apt-get install libasound2-dev
+
+      - name: Install libudev-dev (dep of libudev-sys crate)
+        run:  sudo apt-get install libudev-dev
+
+      - name: Build game
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: -p game --release
+
+      - name: Test game
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: -p game --release
+
+      - name: Bundle game binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: game_linux
+          path: target/release/game
+          retention-days: 2
+
+  build-windows:
+    runs-on: windows-2019
+    steps:
+      - name: Pull repository
+        uses: actions/checkout@v2
+
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          override: true
+
+      - name: Build game
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: -p game --release
+
+      - name: Test game
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: -p game --release
+
+      - name: Bundle game binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: game_windows
+          path: target/release/game.exe
+          retention-days: 2
+
+  bundle-distros:
+    runs-on: ubuntu-20.04
+    needs:
+      - build-assets
+      - build-linux
+      - build-windows
+    steps:
+      - name: Download assets from build-assets job for linux
+        uses: actions/download-artifact@v2
+        with:
+          name: assets
+          path: linux/assets
+
+      - name: Download binary from build-linux job
+        uses: actions/download-artifact@v2
+        with:
+          name: game_linux
+          path: linux/
+
+      - name: Bundle linux distro
+        uses: actions/upload-artifact@v2
+        with:
+          name: zombie_redemption_linux
+          path: linux/**
+          retention-days: 2
+
+      - name: Download assets from build-assets job for windows
+        uses: actions/download-artifact@v2
+        with:
+          name: assets
+          path: windows/assets
+
+      - name: Download binary from build-windows job
+        uses: actions/download-artifact@v2
+        with:
+          name: game_windows
+          path: windows/
+
+      - name: Bundle windows distro
+        uses: actions/upload-artifact@v2
+        with:
+          name: zombie_redemption_windows
+          path: windows/**
+          retention-days: 2
+
+      - name: Remove intermediate artifacts
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: |
+            assets
+            game_linux
+            game_windows
+
+  upload-release:
+    runs-on: ubuntu-20.04
+    needs: [bundle-distros]
+    if: github.event.release
+    steps:
+      - name: "[linux] Download distro"
+        uses: actions/download-artifact@v2
+        with:
+          name: zombie_redemption_linux
+          path: zombie_redemption/
+
+      - name: "[linux] Pack tarball"
+        run: |
+          chmod +x zombie_redemption/game
+          tar cvfz zombie_redemption.tar.gz zombie_redemption/
+
+      - name: "[linux] Remove distro directory"
+        run: rm -rvf zombie_redemption
+
+      - name: "[linux] Upload distro to release"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./zombie_redemption.tar.gz
+          asset_name: zombie_redemption.tar.gz
+          asset_content_type: application/tar+gzip
+
+      - name: "[linux] Remove distro artifact"
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: zombie_redemption_linux
+
+      # ============= Windows part =================
+
+      - name: "[windows] Download distro"
+        uses: actions/download-artifact@v2
+        with:
+          name: zombie_redemption_windows
+          path: zombie_redemption/
+
+      - name: "[windows] Pack in zip"
+        run: zip -r zombie_redemption.zip zombie_redemption/
+
+      - name: "[windows] Remove distro directory"
+        run: rm -rvf zombie_redemption
+
+      - name: "[windows] Upload distro to release"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./zombie_redemption.zip
+          asset_name: zombie_redemption.zip
+          asset_content_type: application/zip
+
+      - name: "[windows] Remove distro artifact"
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: zombie_redemption_windows
