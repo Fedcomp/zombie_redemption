@@ -157,3 +157,58 @@ jobs:
             assets
             game_linux
             game_windows
+
+  upload-release:
+    runs-on: ubuntu-20.04
+    needs: [bundle-distros]
+    # if: github.event.release
+    steps:
+      - name: "[linux] Download distro"
+        uses: actions/download-artifact@v2
+        with:
+          name: zombie_redemption_linux
+          path: zombie_redemption/
+
+      - name: "[linux] Pack tarball"
+        run: |
+          chmod +x zombie_redemption/game
+          tar cvfz zombie_redemption.tar.gz zombie_redemption/
+
+      - name: "[linux] Remove distro directory"
+        run: rm -rvf zombie_redemption
+
+      - name: "[linux] Bundle release"
+        uses: actions/upload-artifact@v2
+        with:
+          name: zombie_redemption_linux_release
+          path: zombie_redemption.tar.gz
+
+      - name: "[linux] Remove distro artifact"
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: zombie_redemption_linux
+
+      # ============= Windows part =================
+
+      - name: "[windows] Download distro"
+        uses: actions/download-artifact@v2
+        with:
+          name: zombie_redemption_windows
+          path: zombie_redemption/
+
+      - name: "[windows] Pack in zip"
+        run: zip -r zombie_redemption.zip zombie_redemption/
+
+      - name: "[windows] Remove distro directory"
+        run: rm -rvf zombie_redemption
+
+      - name: "[windows] Bundle release"
+        uses: actions/upload-artifact@v2
+        with:
+          name: zombie_redemption_windows_release
+          path: zombie_redemption.zip
+
+      - name: "[windows] Remove distro artifact"
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: zombie_redemption_windows
