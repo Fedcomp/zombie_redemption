@@ -60,6 +60,9 @@ jobs:
           profile: minimal
           override: true
 
+      - name: Update ubuntu packages
+        run:  sudo apt-get update
+
       - name: Install libasound2-dev (dep of alsa-sys crate)
         run:  sudo apt-get install libasound2-dev
 
