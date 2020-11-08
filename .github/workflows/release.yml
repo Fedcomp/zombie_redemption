@@ -51,7 +51,8 @@ jobs:
   build-linux:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - name: Pull repository
+        uses: actions/checkout@v2
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
@@ -87,7 +88,8 @@ jobs:
   build-windows:
     runs-on: windows-2019
     steps:
-      - uses: actions/checkout@v2
+      - name: Pull repository
+        uses: actions/checkout@v2
 
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
