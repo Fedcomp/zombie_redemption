@@ -6,13 +6,14 @@ mod plugins;
 mod systems;
 
 use crate::events::MapEvents::{self, LoadMap};
+use crate::plugins::BevyPlugins;
 use crate::plugins::DebugUiPlugin;
 use crate::plugins::MapPlugin;
 use bevy::prelude::*;
-use env_logger::Env;
-
 use bevy_rapier2d::na::Vector2;
 use bevy_rapier2d::physics::{RapierConfiguration, RapierPhysicsPlugin};
+use env_logger::Env;
+// use bevy_rapier2d::render::RapierRenderPlugin;
 
 const GAME_NAME: &str = "Zombie Redemption";
 
@@ -28,14 +29,14 @@ fn main() {
             ..Default::default()
         })
         .add_resource(ClearColor(Color::rgb(1.0, 1.0, 1.0)))
-        .add_plugins(DefaultPlugins)
+        .add_plugins(BevyPlugins)
         .add_plugin(RapierPhysicsPlugin)
         .add_resource(RapierConfiguration {
             gravity: Vector2::new(0.0, -100.0),
             scale: 0.5,
             ..Default::default()
         })
-        //.add_plugin(RapierRenderPlugin)
+        // .add_plugin(RapierRenderPlugin)
         .add_plugin(MapPlugin)
         .add_plugin(DebugUiPlugin)
         .add_startup_system(setup.system())

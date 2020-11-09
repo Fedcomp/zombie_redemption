@@ -1,5 +1,7 @@
+mod bevy;
 mod debug;
 mod map;
 
-pub use debug::DebugUiPlugin;
-pub use map::MapPlugin;
+pub use self::bevy::BevyPlugins;
+pub use self::debug::DebugUiPlugin;
+pub use self::map::MapPlugin;
