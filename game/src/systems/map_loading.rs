@@ -1,11 +1,11 @@
-use std::collections::{HashSet, HashMap};
-use bevy::prelude::*;
-use bevy_rapier2d::{rapier::geometry::ColliderBuilder, physics::RapierConfiguration};
-use bevy_rapier2d::rapier::dynamics::RigidBodyBuilder;
-use tiled::PropertyValue;
-use crate::events::{MapEvents, MapEventsListener, MapAssetsListener};
 use crate::assets::Map;
 use crate::components::MapComponents;
+use crate::events::{MapAssetsListener, MapEvents, MapEventsListener};
+use bevy::prelude::*;
+use bevy_rapier2d::rapier::dynamics::RigidBodyBuilder;
+use bevy_rapier2d::{physics::RapierConfiguration, rapier::geometry::ColliderBuilder};
+use std::collections::{HashMap, HashSet};
+use tiled::PropertyValue;
 
 pub fn process_map_loading(
     mut commands: Commands,
@@ -17,8 +17,10 @@ pub fn process_map_loading(
         match map_event {
             MapEvents::LoadMap(map_name) => {
                 let map_handle = asset_server.load(format!("maps/{}.tmx", map_name).as_str());
-                commands
-                    .spawn(MapComponents { map_handle, ..Default::default() });
+                commands.spawn(MapComponents {
+                    map_handle,
+                    ..Default::default()
+                });
             }
         };
     }
@@ -61,8 +63,10 @@ pub fn process_map_change(
     let phys_scale = rapier_conf.scale;
 
     for changed_map in changed_maps.iter() {
-        let map = &maps.get(changed_map)
-                            .expect("Failed to get changed map struct").source;
+        let map = &maps
+            .get(changed_map)
+            .expect("Failed to get changed map struct")
+            .source;
 
         for (_, _, mut materials_map) in query.iter_mut() {
             materials_map.clear();
@@ -73,7 +77,10 @@ pub fn process_map_change(
                     for image in tile.images.iter() {
                         let image_path = format!("maps/{}", image.source);
                         let texture_handle = asset_server.load(image_path.as_str());
-                        materials_map.insert(tileset.first_gid + tile.id, materials.add(texture_handle.into()));
+                        materials_map.insert(
+                            tileset.first_gid + tile.id,
+                            materials.add(texture_handle.into()),
+                        );
                     }
                 }
             }
@@ -86,32 +93,49 @@ pub fn process_map_change(
 
                     let width = object.width;
                     let height = object.height;
-                    
-                    let material = materials_map.get(&object.gid).expect(&format!("Unknown object material {}", &object.gid));
+
+                    let material = materials_map
+                        .get(&object.gid)
+                        .expect(&format!("Unknown object material {}", &object.gid));
 
                     let rot = object.rotation.to_radians();
 
-                    let rot_offset = (rot.cos() * width + rot.sin() * height - width,rot.cos() * height - rot.sin() * width - height);
+                    let rot_offset = (
+                        rot.cos() * width + rot.sin() * height - width,
+                        rot.cos() * height - rot.sin() * width - height,
+                    );
 
-                    let body = RigidBodyBuilder::new_dynamic().translation(object_x/phys_scale + rot_offset.0, object_y/phys_scale + rot_offset.1).rotation(rot);
+                    let body = RigidBodyBuilder::new_dynamic()
+                        .translation(
+                            object_x / phys_scale + rot_offset.0,
+                            object_y / phys_scale + rot_offset.1,
+                        )
+                        .rotation(rot);
                     let collider = ColliderBuilder::cuboid(width, height);
 
-                    commands.spawn(SpriteComponents {
-                        material: material.clone(),
-                        transform: Transform::from_scale(Vec3::new(width/(map.tile_width as f32),height/(map.tile_height as f32),0.0)),
-                        ..Default::default()
-                    }).with(body).with(collider);
+                    commands
+                        .spawn(SpriteComponents {
+                            material: material.clone(),
+                            transform: Transform::from_scale(Vec3::new(
+                                width / (map.tile_width as f32),
+                                height / (map.tile_height as f32),
+                                0.0,
+                            )),
+                            ..Default::default()
+                        })
+                        .with(body)
+                        .with(collider);
                 }
             }
 
             // Place blocks in the world
             for layer in map.layers.iter() {
-
-                let layer_collide = layer.properties.get("collide") == Some(&PropertyValue::BoolValue(true));
+                let layer_collide =
+                    layer.properties.get("collide") == Some(&PropertyValue::BoolValue(true));
 
                 let layer_tiles = match &layer.tiles {
                     tiled::LayerData::Finite(layers) => layers,
-                    _ => panic!("No support for infinite maps")
+                    _ => panic!("No support for infinite maps"),
                 };
 
                 for (line, tiles) in layer_tiles.iter().rev().enumerate() {
@@ -120,22 +144,26 @@ pub fn process_map_change(
                             continue;
                         }
 
-                        let tile_x = ((column as u32)  * map.tile_width) as f32;
+                        let tile_x = ((column as u32) * map.tile_width) as f32;
                         let tile_y = ((line as u32) * map.tile_height) as f32;
 
-                        let material = materials_map.get(&tile.gid).expect(&format!("Unknown tile material {}", &tile.gid));
-                        let cmds = commands
-                            .spawn(SpriteComponents {
-                                material: material.clone(),
-                                transform: Transform::from_translation(Vec3::new(tile_x, tile_y, 0.0)),
-                                ..Default::default()
-                            });
+                        let material = materials_map
+                            .get(&tile.gid)
+                            .expect(&format!("Unknown tile material {}", &tile.gid));
+                        let cmds = commands.spawn(SpriteComponents {
+                            material: material.clone(),
+                            transform: Transform::from_translation(Vec3::new(tile_x, tile_y, 0.0)),
+                            ..Default::default()
+                        });
 
                         if layer_collide {
                             //TODO: Implement as super collision object later (rapier doesn't support it yet)
                             let rigid_body = RigidBodyBuilder::new_static()
-                                            .translation(tile_x/phys_scale,tile_y/phys_scale);
-                            let collider = ColliderBuilder::cuboid(map.tile_width as f32, map.tile_height as f32);
+                                .translation(tile_x / phys_scale, tile_y / phys_scale);
+                            let collider = ColliderBuilder::cuboid(
+                                map.tile_width as f32,
+                                map.tile_height as f32,
+                            );
                             cmds.with(rigid_body).with(collider);
                         }
                     }

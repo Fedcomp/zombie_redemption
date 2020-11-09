@@ -7,8 +7,8 @@ use std::io::{Seek, SeekFrom};
 use std::path::Path;
 use tempfile::tempfile;
 use xml::reader::EventReader;
-use xml::writer::XmlEvent as WriterEvent;
 use xml::writer::EmitterConfig;
+use xml::writer::XmlEvent as WriterEvent;
 
 /// Simply copy files
 #[derive(Default)]

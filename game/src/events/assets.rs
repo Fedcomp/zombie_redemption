@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::assets::Map;
+use bevy::prelude::*;
 
 #[derive(Default)]
 pub struct MapAssetsListener {

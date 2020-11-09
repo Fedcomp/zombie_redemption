@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 #[derive(Debug)]
 pub enum MapEvents {
-    LoadMap(String)
+    LoadMap(String),
 }
 
 #[derive(Default)]

@@ -5,11 +5,11 @@ mod loaders;
 mod plugins;
 mod systems;
 
-use env_logger::Env;
-use bevy::prelude::*;
-use crate::plugins::MapPlugin;
 use crate::events::MapEvents::{self, LoadMap};
 use crate::plugins::DebugUiPlugin;
+use crate::plugins::MapPlugin;
+use bevy::prelude::*;
+use env_logger::Env;
 
 use bevy_rapier2d::na::Vector2;
 use bevy_rapier2d::physics::{RapierConfiguration, RapierPhysicsPlugin};
@@ -31,7 +31,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(RapierPhysicsPlugin)
         .add_resource(RapierConfiguration {
-            gravity: Vector2::new(0.0,-100.0),
+            gravity: Vector2::new(0.0, -100.0),
             scale: 0.5,
             ..Default::default()
         })
@@ -42,10 +42,7 @@ fn main() {
         .run();
 }
 
-fn setup(
-    mut commands: Commands,
-    mut map_events: ResMut<Events<MapEvents>>,
-) {
+fn setup(mut commands: Commands, mut map_events: ResMut<Events<MapEvents>>) {
     commands.spawn(Camera2dComponents::default());
     map_events.send(LoadMap("zr_test".into()));
 }

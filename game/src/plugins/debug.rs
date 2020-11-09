@@ -1,5 +1,5 @@
-use bevy::{prelude::*,diagnostic::{FrameTimeDiagnosticsPlugin}};
-use crate::systems::{setup_ui,text_update_system};
+use crate::systems::{setup_ui, text_update_system};
+use bevy::{diagnostic::FrameTimeDiagnosticsPlugin, prelude::*};
 
 pub struct DebugUiPlugin;
 

@@ -1,5 +1,5 @@
-mod map;
 mod debug;
+mod map;
 
-pub use map::MapPlugin;
 pub use debug::DebugUiPlugin;
+pub use map::MapPlugin;
