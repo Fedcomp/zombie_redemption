@@ -1,5 +1,7 @@
 mod assets;
 mod map;
+mod prefab;
 
-pub use assets::MapAssetsListener;
-pub use map::{MapEvents, MapEventsListener};
+pub use map::*;
+pub use prefab::*;
+pub use assets::*;

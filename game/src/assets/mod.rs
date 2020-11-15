@@ -1,3 +1,5 @@
 mod map;
+mod prefab;
 
-pub use map::Map;
+pub use map::*;
+pub use prefab::*;

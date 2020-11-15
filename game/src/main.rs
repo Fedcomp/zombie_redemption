@@ -3,8 +3,15 @@ mod components;
 mod events;
 mod loaders;
 mod plugins;
+mod resources;
 mod systems;
+mod serde;
 
+use env_logger::Env;
+use bevy::prelude::*;
+use crate::plugins::PrefabPlugin;
+use crate::plugins::MapPlugin;
+use crate::events::PrefabEvents::{self, LoadPrefab};
 use crate::events::MapEvents::{self, LoadMap};
 use crate::plugins::BevyPlugins;
 use crate::plugins::DebugUiPlugin;
@@ -36,14 +43,26 @@ fn main() {
             scale: 0.5,
             ..Default::default()
         })
-        // .add_plugin(RapierRenderPlugin)
+        //.add_plugin(RapierRenderPlugin)
+        .add_plugin(PrefabPlugin)
         .add_plugin(MapPlugin)
         .add_plugin(DebugUiPlugin)
         .add_startup_system(setup.system())
         .run();
 }
 
-fn setup(mut commands: Commands, mut map_events: ResMut<Events<MapEvents>>) {
-    commands.spawn(Camera2dComponents::default());
+fn setup(
+    mut commands: Commands,
+    mut pschema_events: ResMut<Events<PrefabEvents>>,
+    mut map_events: ResMut<Events<MapEvents>>
+) {
+
+    pschema_events.send(LoadPrefab("sprite_cuboid.pfb".into()));
+    
+
+    commands.spawn(Camera2dComponents {
+        transform: Transform::from_scale(2.0),
+        ..Default::default()
+    });
     map_events.send(LoadMap("zr_test".into()));
 }
