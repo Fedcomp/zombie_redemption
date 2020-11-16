@@ -1,7 +1,8 @@
 use bevy::{ecs::bevy_utils::HashMap, prelude::{Assets, Component, FromResources, Handle, Resources, World}, property::{DynamicProperties, Properties, PropertyVal}, type_registry::ComponentRegistration, property::Property, type_registry::TypeRegistry};
+use log::warn;
 use tiled::{Object, ObjectGroup, PropertyValue};
 
-use crate::assets::{AddComponent, Prefab};
+use crate::{components::TransmutableComponent, assets::{AddComponent, Prefab}};
 
 #[derive(Clone)]
 pub struct InstanceData {
@@ -144,23 +145,19 @@ impl PrefabSpawner {
 
                 let component = Self::patch_component(component,&instance_data.object);
 
-                let component_registration = component_registry
-                    .get_with_name(&component.type_name).unwrap();
+                if let Some(component_registration) = component_registry.get_with_name(&component.type_name) {
                 
-                
-
-                    //let kek = Self::unwrap_component(resources,&component);
-
-                    //let kek: T = *component_registration.into();
-                    //let kek = component_registration.;
-                if world.has_component_type(entity, component_registration.ty) {
-                    if component.type_name != "Camera" {
-                        component_registration.apply_component_to_entity(world, entity, &component);
+                    if world.has_component_type(entity, component_registration.ty) {
+                        if component.type_name != "Camera" {
+                            component_registration.apply_component_to_entity(world, entity, &component);
+                        }
+                    } else {
+                        component_registration
+                            .add_component_to_entity(world, resources, entity, &component);
                     }
-                } else {
-                    component_registration
-                        .add_component_to_entity(world, resources, entity, &component);
-                }
+
+                    world.insert_one(entity, TransmutableComponent::default() ).unwrap();
+                } else {warn!("Invalid component {}",&component.type_name)}
             }
     }
     fn _spawn(&self, _prefab: Prefab ) {

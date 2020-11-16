@@ -7,14 +7,14 @@ pub struct Prefab {
     pub components: Vec<DynamicProperties>,
 }
 
-pub trait AddComponent {
+pub trait AddComponent where Self: Send + Sync + 'static {
     fn add(self,world: &mut World,entity: Entity);
 }
 
 #[macro_export]
 macro_rules! prefab_component {
     ($Name:ident, $($element: ident: $ty: ty),*) => {
-        #[derive(Bundle, Default)]
+        #[derive(Bundle, Properties, Default)]
         pub struct $Name {
         pub prefab: Handle<Prefab>,
         pub width: f32,

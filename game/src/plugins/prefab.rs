@@ -5,6 +5,7 @@ use crate::loaders::PrefabLoader;
 use crate::systems::{process_prefab_loading,prefab_spawner_system};
 use crate::resources::PrefabSpawner;
 use bevy::scene::*;
+use crate::components::*;
 
 #[derive(Default)]
 pub struct PrefabPlugin;
@@ -14,6 +15,8 @@ pub const PREFAB_STAGE: &str = "prefab";
 impl Plugin for PrefabPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
+            .register_component::<TransmutableComponent>()
+            .register_component::<Cuboid>()
             .add_resource(PrefabSpawner::default())
             .add_asset::<Prefab>()
             .add_asset_loader::<Prefab, PrefabLoader>()

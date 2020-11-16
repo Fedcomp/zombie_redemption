@@ -2,14 +2,6 @@
   class: "sprite_cuboid",
   components: [
     {
-        "type": "Sprite",
-        "map": {
-        "material": 0,
-        "scale_x": 0.0,
-        "scale_y": 0.0
-        }
-    },
-    {
         "type": "Cuboid",
         "map": {
         },
