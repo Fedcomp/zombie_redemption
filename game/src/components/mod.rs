@@ -1,7 +1,9 @@
 mod map;
 mod prefab;
-mod cuboid;
+mod physics;
+mod sprite;
 
 pub use map::*;
 pub use prefab::*;
-pub use cuboid::*;
+pub use physics::*;
+pub use sprite::*;

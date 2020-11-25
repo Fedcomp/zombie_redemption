@@ -1,9 +1,6 @@
-use std::collections::{HashSet, HashMap};
-use bevy::{ecs::HecsQuery, math::vec2, prelude::*};
-use bevy_rapier2d::physics::RapierConfiguration;
-use tiled::Object;
-use crate::{components::TransmutableComponent, assets::{AddComponent, Map, Prefab}, events::{PrefabEvents, PrefabEventsListener, PrefabAssetsListener}, resources::PrefabSpawner};
-use bevy::ecs::{Resources, World, With};
+use bevy::{ecs::{DynamicBundle}, prelude::*, type_registry::IntoComponent};
+use crate::{components::{PrefabComponents}, events::{PrefabEvents, PrefabEventsListener}, resources::PrefabSpawner};
+use bevy::ecs::{Resources, World};
 
 //Entity map
 //Entity group
@@ -18,33 +15,53 @@ pub fn process_prefab_loading(
     for pschema_event in state.reader.iter(&pschema_events) {
         match pschema_event {
             PrefabEvents::LoadPrefab(file) => {
-                // TODO: Find way to merge all pschemas in single object
-                let pschemas_ids = Vec::new();
-
-                let mut pschemas:Vec<Handle<Prefab>> = Vec::new();
-                // TODO: load_asset_folder is broken for now :()
-                pschemas.push(asset_server.load(format!("assets/prefabs/{}",file)).unwrap());
-
-                for pschema_id in pschemas_ids {
-                    
-                    let pschema_handle: Handle<Prefab> = Handle::from_id(pschema_id);
-
-                    println!("{:?}",pschema_id);
-
-                    pschemas.push(pschema_handle);
-
-                }
-
+                let prefab_handle = asset_server.load(format!("prefabs/{}.pfb",file).as_str());
+                commands.spawn(PrefabComponents {
+                    prefab_handle,
+                    ..Default::default()
+                });
                 println!("Schema load called {}",file);
-            },
-            _ => {}
+            }
         };
+    }
+}
+
+pub fn component_into<T,C: Component>(world: &mut World, resources: &mut Resources) where T:IntoComponent<C> + Component {
+    let mut ops: Vec<(Entity,C)> = Vec::new();
+    
+    world.query::<(Entity, &T)>()
+        .for_each(|(entity,component)| {ops.push((entity, component.into_component(resources)))});
+
+    for (entity, component) in ops.into_iter() {
+        world.insert(entity, (component,)).unwrap();
+        world.remove_one::<T>(entity).unwrap();
+    }
+}
+
+pub fn bundle_into<T,C: Component + DynamicBundle>(world: &mut World, resources: &mut Resources) where T:IntoComponent<C> + Component + DynamicBundle {
+    let mut ops: Vec<(Entity,C)> = Vec::new();
+    
+    world.query::<(Entity, &T)>()
+        .for_each(|(entity,component)| {ops.push((entity, component.into_component(resources)))});
+
+    for (entity, component) in ops.into_iter() {
+        world.insert(entity, component).unwrap();
+        world.remove_one::<T>(entity).unwrap();
+    }
+}
+
+pub fn print_system(query: Query<(Entity, &SpriteComponents)>) {
+    for (entity, component_a) in query.iter() {
+        println!("  Entity({})", entity.id());
+        println!(
+            "    ComponentA: {{ {:?} }}\n",
+            component_a.transform
+        );
     }
 }
 
 pub fn prefab_spawner_system(world: &mut World, resources: &mut Resources)  {
     let mut prefab_spawner = resources.get_mut::<PrefabSpawner>().unwrap();
-    let scene_asset_events = resources.get::<Events<AssetEvent<Prefab>>>().unwrap();
 
     /*
     let mut updated_spawned_scenes = Vec::new();
@@ -60,15 +77,15 @@ pub fn prefab_spawner_system(world: &mut World, resources: &mut Resources)  {
     }
     */
 
-    prefab_spawner.despawn_queued_groups(world);
+    prefab_spawner.despawn_queued_groups(world, resources);
     prefab_spawner.spawn_queued_groups(world, resources);
 
 
-    let mut query = world.query::<(&Entity,&TransmutableComponent)>();
+    //let mut query = world.query::<(&Entity,&TransmutableComponent)>();
 
-    for (entity,_) in &mut query.iter() {
+    //for (entity,_) in &mut query.iter() {
         //let kek = world.get::<AddComponent>(*entity).unwrap();
-    }
+    //}
     //prefab_spawner
     //    .update_spawned_scenes(world, resources, &updated_spawned_scenes)
     //    .unwrap();

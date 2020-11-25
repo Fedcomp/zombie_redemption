@@ -2,6 +2,16 @@
   class: "sprite_cuboid",
   components: [
     {
+        "type": "SpriteC",
+        "map": {
+        },
+    },
+    {
+        "type": "RigidBody",
+        "map": {
+        },
+    },
+    {
         "type": "Cuboid",
         "map": {
         },

@@ -1,4 +1,4 @@
-use crate::assets::Map;
+use crate::{assets::Map, events::MapMaterials};
 use crate::events::{MapEvents, MapEventsListener};
 use crate::loaders::MapLoader;
 use crate::systems::{process_map_change, process_map_loading};
@@ -13,6 +13,7 @@ impl Plugin for MapPlugin {
             .add_asset_loader::<MapLoader>(MapLoader)
             .add_event::<MapEvents>()
             .init_resource::<MapEventsListener>()
+            .init_resource::<MapMaterials>()
             .add_system(process_map_loading.system())
             .add_system(process_map_change.system());
     }

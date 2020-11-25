@@ -8,18 +8,15 @@ mod systems;
 mod serde;
 
 use env_logger::Env;
-use bevy::prelude::*;
+use bevy::{prelude::*, math::vec3};
 use crate::plugins::PrefabPlugin;
 use crate::plugins::MapPlugin;
 use crate::events::PrefabEvents::{self, LoadPrefab};
 use crate::events::MapEvents::{self, LoadMap};
 use crate::plugins::BevyPlugins;
 use crate::plugins::DebugUiPlugin;
-use crate::plugins::MapPlugin;
-use bevy::prelude::*;
-use bevy_rapier2d::na::Vector2;
+use bevy_rapier2d::{na::Vector2};
 use bevy_rapier2d::physics::{RapierConfiguration, RapierPhysicsPlugin};
-use env_logger::Env;
 // use bevy_rapier2d::render::RapierRenderPlugin;
 
 const GAME_NAME: &str = "Zombie Redemption";
@@ -43,10 +40,10 @@ fn main() {
             scale: 0.5,
             ..Default::default()
         })
-        //.add_plugin(RapierRenderPlugin)
         .add_plugin(PrefabPlugin)
         .add_plugin(MapPlugin)
         .add_plugin(DebugUiPlugin)
+        //.add_plugin(RapierRenderPlugin)
         .add_startup_system(setup.system())
         .run();
 }
@@ -57,11 +54,10 @@ fn setup(
     mut map_events: ResMut<Events<MapEvents>>
 ) {
 
-    pschema_events.send(LoadPrefab("sprite_cuboid.pfb".into()));
-    
+    pschema_events.send(LoadPrefab("sprite_cuboid".into()));
 
     commands.spawn(Camera2dComponents {
-        transform: Transform::from_scale(2.0),
+        transform: Transform::from_scale(vec3(2.0,2.0,2.0)),
         ..Default::default()
     });
     map_events.send(LoadMap("zr_test".into()));

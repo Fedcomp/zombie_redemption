@@ -108,7 +108,6 @@ enum PrefabField {
 
 pub const PREFAB_STRUCT: &str = "Prefab";
 pub const PREFAB_FIELD_CLASS: &str = "class";
-pub const PREFAB_FIELD_SHAPE: &str = "shape";
 pub const PREFAB_FIELD_COMPONENTS: &str = "components";
 
 struct PrefabVisiter<'a> {
