@@ -1,13 +1,13 @@
 use bevy::diagnostic::{Diagnostics, FrameTimeDiagnosticsPlugin};
 use bevy::prelude::*;
 
-pub fn setup_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn setup_ui(commands: &mut Commands, asset_server: Res<AssetServer>) {
     let font_handle = asset_server.load("fonts/FiraSans-Bold.ttf");
     commands
         // 2d camera
-        .spawn(UiCameraComponents::default())
+        .spawn(CameraUiBundle::default())
         // texture
-        .spawn(TextComponents {
+        .spawn(TextBundle {
             style: Style {
                 align_self: AlignSelf::FlexEnd,
                 ..Default::default()
@@ -18,16 +18,19 @@ pub fn setup_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
                 style: TextStyle {
                     font_size: 18.0,
                     color: Color::BLACK,
+                    ..Default::default()
                 },
             },
             ..Default::default()
         });
 }
 
-pub fn text_update_system(diagnostics: Res<Diagnostics>, mut text: Mut<Text>) {
+pub fn text_update_system(diagnostics: Res<Diagnostics>, mut texts: Query<&mut Text>) {
     if let Some(fps) = diagnostics.get(FrameTimeDiagnosticsPlugin::FPS) {
         if let Some(average) = fps.average() {
-            text.value = format!("FPS: {:.2}", average);
+            for mut text in texts.iter_mut() {
+                text.value = format!("FPS: {:.2}", average);
+            }
         }
     }
 }

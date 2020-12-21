@@ -8,7 +8,7 @@ use std::collections::{HashMap, HashSet};
 use tiled::PropertyValue;
 
 pub fn process_map_loading(
-    mut commands: Commands,
+    commands: &mut Commands,
     mut state: ResMut<MapEventsListener>,
     map_events: Res<Events<MapEvents>>,
     asset_server: Res<AssetServer>,
@@ -28,7 +28,7 @@ pub fn process_map_loading(
 
 // TODO: Rework load system
 pub fn process_map_change(
-    mut commands: Commands,
+    commands: &mut Commands,
     asset_server: Res<AssetServer>,
     // TODO: Local vs Res?
     mut state: Local<MapAssetsListener>,
@@ -114,7 +114,7 @@ pub fn process_map_change(
                     let collider = ColliderBuilder::cuboid(width, height);
 
                     commands
-                        .spawn(SpriteComponents {
+                        .spawn(SpriteBundle {
                             material: material.clone(),
                             transform: Transform::from_scale(Vec3::new(
                                 width / (map.tile_width as f32),
@@ -150,7 +150,7 @@ pub fn process_map_change(
                         let material = materials_map
                             .get(&tile.gid)
                             .expect(&format!("Unknown tile material {}", &tile.gid));
-                        let cmds = commands.spawn(SpriteComponents {
+                        let cmds = commands.spawn(SpriteBundle {
                             material: material.clone(),
                             transform: Transform::from_translation(Vec3::new(tile_x, tile_y, 0.0)),
                             ..Default::default()

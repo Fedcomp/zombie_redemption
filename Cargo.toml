@@ -16,5 +16,4 @@ opt-level = 3
 lto = "fat"
 
 # [patch.crates-io]
-# bevy = { path = "../bevy" }
 # bevy_rapier2d = { path = "../bevy_rapier/bevy_rapier2d" }

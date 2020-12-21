@@ -1,4 +1,4 @@
-use bevy::type_registry::TypeUuid;
+use bevy::reflect::TypeUuid;
 
 /// Asset container for tiled map
 #[derive(Debug, Clone, TypeUuid)]
