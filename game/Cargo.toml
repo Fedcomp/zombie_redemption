@@ -5,9 +5,28 @@ authors = ["Fedcomp"]
 edition = "2018"
 
 [dependencies]
-bevy = "0.3.0"
-bevy_rapier2d = "0.5.0"
-log = "0.4.11"
+bevy_rapier2d = "0.7.0"
 env_logger = "0.7.1"
 tiled = "0.9.3"
 anyhow = "1.0.33"
+
+[dependencies.bevy]
+version = "0.4.0"
+default-features = false
+features = [
+    # Default features atm
+    # "bevy_audio",
+    # "bevy_dynamic_plugin",
+    # "bevy_gilrs",
+    # "bevy_gltf",
+    "bevy_wgpu",
+    "bevy_winit",
+    "render",
+    "png",
+    # "hdr",
+    # "mp3",
+    "x11",
+
+    # Non-default feature. Speedup compilation by making it dylib
+    # "dynamic"
+]
