@@ -1,5 +1,5 @@
 use crate::assets::Map;
-use crate::components::MapComponents;
+use crate::bundles::MapBundle;
 use crate::events::{MapAssetsListener, MapEvents, MapEventsListener};
 use bevy::prelude::*;
 use bevy_rapier2d::rapier::dynamics::RigidBodyBuilder;
@@ -17,7 +17,7 @@ pub fn process_map_loading(
         match map_event {
             MapEvents::LoadMap(map_name) => {
                 let map_handle = asset_server.load(format!("maps/{}.tmx", map_name).as_str());
-                commands.spawn(MapComponents {
+                commands.spawn(MapBundle {
                     map_handle,
                     ..Default::default()
                 });

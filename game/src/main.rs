@@ -1,5 +1,5 @@
 mod assets;
-mod components;
+mod bundles;
 mod events;
 mod loaders;
 mod plugins;

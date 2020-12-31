@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use std::collections::HashMap;
 
 #[derive(Bundle, Default)]
-pub struct MapComponents {
+pub struct MapBundle {
     pub map_handle: Handle<Map>,
     pub materials: HashMap<u32, Handle<ColorMaterial>>,
 }
