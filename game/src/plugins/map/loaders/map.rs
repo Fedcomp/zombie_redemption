@@ -1,4 +1,4 @@
-use crate::assets::Map;
+use super::super::assets::TiledMap;
 use bevy::asset::{AssetLoader, LoadContext, LoadedAsset};
 use bevy::utils::BoxedFuture;
 use std::io::BufReader;
@@ -14,7 +14,7 @@ impl AssetLoader for MapLoader {
     ) -> BoxedFuture<'a, anyhow::Result<()>> {
         Box::pin(async move {
             let map = tiled::parse_with_path(BufReader::new(bytes), load_context.path())?;
-            load_context.set_default_asset(LoadedAsset::new(Map::new(map)));
+            load_context.set_default_asset(LoadedAsset::new(TiledMap::new(map)));
             Ok(())
         })
     }

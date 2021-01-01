@@ -1,6 +1,6 @@
-use crate::assets::Map;
-use crate::bundles::MapBundle;
-use crate::events::{MapAssetsListener, MapEvents, MapEventsListener};
+use super::super::assets::TiledMap;
+use super::super::bundles::MapBundle;
+use super::super::events::{MapAssetsListener, MapEvents, MapEventsListener};
 use bevy::prelude::*;
 use bevy_rapier2d::rapier::dynamics::RigidBodyBuilder;
 use bevy_rapier2d::{physics::RapierConfiguration, rapier::geometry::ColliderBuilder};
@@ -32,18 +32,18 @@ pub fn process_map_change(
     asset_server: Res<AssetServer>,
     // TODO: Local vs Res?
     mut state: Local<MapAssetsListener>,
-    map_asset_events: Res<Events<AssetEvent<Map>>>,
-    maps: Res<Assets<Map>>,
+    map_asset_events: Res<Events<AssetEvent<TiledMap>>>,
+    maps: Res<Assets<TiledMap>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
     rapier_conf: Res<RapierConfiguration>,
     mut query: Query<(
         Entity,
-        &Handle<Map>,
+        &Handle<TiledMap>,
         &mut HashMap<u32, Handle<ColorMaterial>>,
         // &Transform,
     )>,
 ) {
-    let mut changed_maps = HashSet::<Handle<Map>>::new();
+    let mut changed_maps = HashSet::<Handle<TiledMap>>::new();
     for map_asset_event in state.reader.iter(&map_asset_events) {
         match map_asset_event {
             AssetEvent::Created { ref handle } => {

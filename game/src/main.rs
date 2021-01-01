@@ -1,12 +1,8 @@
-mod assets;
-mod bundles;
-mod events;
-mod loaders;
 mod plugins;
 mod systems;
 
-use crate::events::MapEvents::{self, LoadMap};
 use crate::plugins::DebugUiPlugin;
+use crate::plugins::MapEvents::{self, LoadMap};
 use crate::plugins::MapPlugin;
 use bevy::prelude::*;
 use bevy_rapier2d::na::Vector2;
