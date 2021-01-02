@@ -1,4 +1,6 @@
-use crate::systems::{setup_ui, text_update_system};
+mod systems;
+
+use self::systems::{setup_ui, text_update_system};
 use bevy::{diagnostic::FrameTimeDiagnosticsPlugin, prelude::*};
 
 pub struct DebugUiPlugin;
